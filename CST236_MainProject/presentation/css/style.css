@@ -1,0 +1,309 @@
+/**
+ * CST-236 Main Project
+ * style.css.php version 1.0
+ * Program Author: Evan Wilson
+ * Date: 07 April 2019
+ * Main CSS style page
+ */
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+/** Background **/
+body {
+    color: #ffffff;
+    background-color:#FFFFFF;
+    font-weight: bolder;
+    font-family:helvetica;
+}
+/** TODO: Delete when everyone test
+.header {
+    font-family: 'Titillium Web', sans-serif;
+    position: relative;
+    font-size: 36px;
+    line-height: 40px;
+    padding: 50px 0px 0px 0px;
+    background-color: #f1f1f1;
+    width: 100%;
+    height: 100px;
+    margin: 0px auto 0px;
+    color: #355681;
+    text-align: center;
+    border-bottom: #000000;
+
+}
+**/
+/* Style the header with a grey background and some padding */
+.header {
+    overflow: hidden;
+    background-color: dodgerblue;
+    padding: 20px 10px;
+}
+
+/* Style the header links */
+.header a {
+    float: left;
+    color: white;
+    padding: 12px;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 25px;
+    border-radius: 4px;
+    font-weight: bolder;
+}
+
+/* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
+.header a.logo {
+    font-size: 40px;
+    font-weight: bolder;
+}
+.header a.logo:hover {
+    color: white;
+    background-color: dodgerblue;
+}
+
+/* Change the background color on mouse-over */
+.header a:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    border-radius: 25px;
+}
+
+/* Style the active/current link*/
+.header a.active {
+    background-color: #FFFFFF;
+    color: dodgerblue;
+    border-radius: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* Style the active/current link*/
+.header a.active:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #FFFFFF;
+    border-radius: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* Float the link section to the right */
+.header-right {
+    float: right;
+}
+
+/* Add media queries for responsiveness - when the screen is 500px wide or less, stack the links on top of each other */
+@media screen and (max-width: 500px) {
+    .header a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+    .header-right {
+        float: none;
+    }
+}
+/* Body */
+form, .content {
+    text-align: center;
+    width: 100%;
+    margin: 0px auto;
+    color: black;
+    font-size: 18px;
+    border-radius: 0px 0px 0px 0px;
+}
+.input-group {
+    margin: 10px 100px 10px 100px;
+}
+/** Text field header **/
+.input-group label {
+    font-size: 22px;
+    font-weight: bold;
+    font-family:helvetica;
+    color: dodgerblue;
+    display: block;
+    text-align: left;
+    margin: 3px;
+}
+.input-group input {
+    height: 30px;
+    width: 300px;
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 1px #dddddd;
+    background-color: #dddddd;
+    color: dodgerblue;
+}
+
+/** Error banner (i.e., wrong password)**/
+.error {
+    width: 100%;
+    margin: 0px auto;
+    padding: 10px;
+    border: 1px solid #f60010;
+    color: #F60010;
+    background: #f2dede;
+    border-radius: 5px;
+    text-align: center;
+}
+/** Logged in banner **/
+.success {
+    width: 100%;
+    color: #000000;
+    background: #dff0d8;
+    border: 1px solid #00E304;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.flex-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    align-content: space-between;
+}
+/** Text area focus/border */
+select:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+input[type="username"]:focus
+{
+    border: 2px solid;
+    border-color: dodgerblue;
+    background-color: rgba(0, 0, 0, 0.0);
+    color: dodgerblue;
+    font-size: 18px;
+    font-weight: bold;
+}
+/** Remove text area outline */
+textarea:focus, input:focus{
+    outline: none;
+}
+/** Google Chrome fixes */
+/** Remove blue default blue outline for text area */
+*:focus {
+    outline: none;
+}
+/*Change text in auto-fill text area*/
+input:-webkit-autofill
+{
+    border: 2px solid;
+    border-color: dodgerblue;
+    background-color: rgba(0, 0, 0, 0.0);
+    color: #212121;
+    font-size: 18px;
+    font-weight: bold;
+    -webkit-box-shadow: 0 0 0 30px dodgerblue inset;
+    -webkit-text-fill-color: white !important;
+}
+.btn {
+    padding: 10px;
+    font-size: 22px;
+    font-weight: bold;
+    background-color: white;
+    color: dodgerblue;
+    border-radius: 25px;
+    border: 2px solid dodgerblue; /* Green */
+}
+.btn:hover {
+    font-weight: bold;
+    font-size: 22px;
+    background-color: dodgerblue;
+    color: #FFFFFF;
+}
+
+/* Button ripple Effect */
+button{
+    position: relative;
+    overflow: hidden;
+}
+button:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: dodgerblue;
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+button{
+    position: relative;
+    overflow: hidden;
+}
+.btn:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: dodgerblue;
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 1;
+    }
+    20% {
+        transform: scale(25, 25);
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: scale(40, 40);
+    }
+}
+button:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+.center {
+    text-align: center;
+}
+
+div.a {
+    text-align: left;
+    justify-content: left;
+    align-items: left;
+    align-content: space-between;
+}
+
+div.b {
+    text-align: right;
+}
+
+div.c {
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid dodgerblue;
+    padding: 15px;
+    text-align: left;
+}
+
+.radio{
+    text-align: left;
+    justify-content: left;
+    align-items: left;
+    margin-left: 5px;
+    margin-right: 5px;
+}

@@ -7,4 +7,4 @@
  * Index page that auto directs user to login page.
  */
 
-header("Location: login.php");
+header("Location: presentation/views/login/login.php");
