@@ -46,7 +46,7 @@ require_once 'securePage.php';
 <br><br>
 
 <!-- TODO: Make so only admin see this -->
-<form action = "../../../presentation/handlers/UserSearchHandler.php">
+<form action = "../../../presentation/handlers/userSearchHandler.php">
 <div class="flex-container">
     <div class="input-group">
 		<label>Search for a user</label>

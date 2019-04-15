@@ -7,10 +7,10 @@
  * Starting page of application. Here the user can login, or select register new account.
  */
 
-require_once '..\\..\\..\\header.php';
-require_once '..\\..\\..\\Autoloader.php';
+require_once '../../../header.php';
+require_once '../../../Autoloader.php';
 
-require_once '..\\..\\..\\businessService/ServerService.php';
+require_once '../../../businessService/ServerService.php';
 
 //used for logging out to end session
 if (isset($_GET['logout'])) {

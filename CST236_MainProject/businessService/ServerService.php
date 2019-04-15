@@ -23,10 +23,10 @@ $errors = array();
 /* $host = 'us-cdbr-iron-east-03.cleardb.net';
 $user = 'b5cd00b29271f8';
 $dbpassword = 'd793dcc9';
-$database = 'heroku_37a87dc739d8a45'; */
+$database = 'heroku_37a87dc739d8a45';
 
 // connect to the database using above login details
-/* $db = mysqli_connect($host, $user, $dbpassword, $database); */
+$db = mysqli_connect($host, $user, $dbpassword, $database); */
 
 $conn = new Database();
 
