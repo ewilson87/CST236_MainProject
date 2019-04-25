@@ -180,6 +180,19 @@ input[type="username"]:focus
     font-size: 18px;
     font-weight: bold;
 }
+
+textarea {
+	height: 80px;
+    width: 75%;
+    padding: 5px 10px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 1px #dddddd;
+    background-color: #dddddd;
+    color: dodgerblue;
+}
+
 /** Remove text area outline */
 textarea:focus, input:focus{
     outline: none;
@@ -290,6 +303,19 @@ div.c {
     text-align: center;
 }
 
+div.d {
+    text-align: left;
+    color: dodgerblue;
+    justify-content: left;
+    align-items: left;
+    align-content: space-between;
+}
+div.e {
+	display: flex;
+    flex-direction: row;
+    align-content: space-between;
+}
+
 table {
     border-collapse: collapse;
 }
@@ -307,3 +333,9 @@ table, th, td {
     margin-left: 5px;
     margin-right: 5px;
 }
+
+ #textBox
+    {
+     height:100px;
+     width:75%;
+    }

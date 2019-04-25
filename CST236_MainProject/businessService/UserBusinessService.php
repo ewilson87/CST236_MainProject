@@ -11,10 +11,6 @@ class UserBusinessService
     
     public function SearchByUsername($pattern){
         
-        /* $dbservice = new UserDataService();
-        
-        return $dbservice->findByUsername($pattern); */
-        
         $users = Array();
         
         $dbService = new UserDataService();
@@ -41,11 +37,19 @@ class UserBusinessService
     
     
     
-    public function findByID($pattern){
+    public function findByID($id){
         
         $dbservice = new UserDataService();
         
-        return $dbservice->findByID($pattern);
+        return $dbservice->findByID($id);
+        
+    }
+    
+    public function updateUser($id, $username, $password, $fname, $lname, $email, $accessLevel){
+        
+        $dbservice = new UserDataService();
+        
+        return $dbservice->updateUser($id, $username, $password, $fname, $lname, $email, $accessLevel);
         
     }
     
@@ -57,18 +61,5 @@ class UserBusinessService
         
     }
     
-    public function findByFirstNameWithAddress($pattern){
-        
-        $dbservice = new UserDataService();
-        
-        return $dbservice->findByFirstNameWithAddress($pattern);
-        
-        /* $persons = Array();
-        
-        $dbService = new UserDataService();
-        $persons = $dbService->findByFirstNameWithAddress($pattern);
-        
-        return $persons; */
-    }
 }
 

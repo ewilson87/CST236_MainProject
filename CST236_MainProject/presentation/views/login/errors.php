@@ -12,9 +12,24 @@ require_once '../../../header.php';
  //if there are any errors, loop through array and echo each one
     if (count($errors) > 0) : ?>
  
-    <div class="error">
+ 
+             <div class="container mb-4">
+	<div class="row">
+		<div class="col">
+			<div class="card">
+				<div class="card-body text-center bg-danger">
+					<h3 class="card-title">
         <?php foreach ($errors as $error) : ?>
-            <p><?php echo $error ?></p>
+
+						<?php echo $error ?>
+						<hr>
+
         <?php endforeach ?>
-    </div>
+					</h3>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <?php  endif ?>
+

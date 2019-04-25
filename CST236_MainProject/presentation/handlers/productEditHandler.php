@@ -6,12 +6,18 @@ require_once '../../header.php';
 require_once '../../Autoloader.php';
 require_once 'handlersSecurePage.php';
 
-$searchPattern = $_GET['pattern'];
-$_SESSION['searchPattern'] = $searchPattern;
+//additional check to make sure only admin can access this page
+if ($_SESSION['accessLevel'] != 9) {
+    session_destroy();
+    header("Location: ../views/login/login.php");
+}
+    
+$id = $_GET['id'];
 
 $dbservice = new ProductBusinessService();
 
-$products = $dbservice->findByMakeOrModel($searchPattern);
+$product = $dbservice->findByID($id);
+
 ?>
 
 <!doctype html>
@@ -28,19 +34,16 @@ $products = $dbservice->findByMakeOrModel($searchPattern);
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
 	
-<!--  Datatables CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
-
-<!--  Font Awesome CSS -->
+	<!--  Font Awesome CSS -->
 <link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
 
-<title>Login Success</title>
+<title>Product Search Results</title>
 </head>
 
-<body>
+<body class="">
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
@@ -48,16 +51,16 @@ $products = $dbservice->findByMakeOrModel($searchPattern);
 			src="../views/images/wLogo.png" class="img-fluid img-thumbnail mr-2" alt=""
 			width="40" height="40" class="d-inline-block align-top"
 			style="margin-right: 5px"></a>
-			<h3 class="text-white mt-1">Search Results <?php echo $_GET['pattern'] ?></h3>
+			<h3 class="text-white mt-1">Edit Product ID: <?php echo $id ?></h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarSupportedContent">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
-		<ul class="nav navbar-nav ml-auto">
+		<ul class="nav navbar-nav ml-auto">			
 			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
-				href="../views/login/loginSuccess.php"
+				href="../handlers/productSelectHandler.php?vin=<?php echo $_SESSION['vin']?>"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
 			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
@@ -71,27 +74,20 @@ $products = $dbservice->findByMakeOrModel($searchPattern);
 		</ul>
 	</nav>
 
+<?php 
+if ($product){
+     
+include('_displayProductEdit.php');
+?>
 
 
-<?php
-if (isset($_SESSION['deleteSuccess']) && $_SESSION['deleteSuccess'] == true){
-    unset($_SESSION['deleteSuccess']);
+<?php 
     
-    include ('_deleteSuccess.php');
-}
-
-
-if ($products) {
-    include ('_displayProductsResults.php');
-} else {
-    echo "No vehicles found with that make or model";
 }
 
 ?>
 
 
-
-		
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -105,14 +101,15 @@ if ($products) {
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		crossorigin="anonymous" type="text/javascript"></script>
 	
-	<!--  Datatables JavaScript -->
-	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<!--  confirmation javascript -->
+	<script src="//cdn.jsdelivr.net/npm/bootstrap-confirmation2/dist/bootstrap-confirmation.min.js"></script>
 
-<!--  Datatable script -->	
+<!-- Confirmation script -->
 <script>
-$(document).ready( function () {
-    $('#mydatatable').DataTable();
-} );
+$('[data-toggle=confirmation]').confirmation({
+  rootSelector: '[data-toggle=confirmation]',
+  // other options
+});
 </script>
 
 <!--  tool tip script script -->
@@ -122,7 +119,5 @@ $(document).ready(function(){
 });
 </script>
 	
-	
 </body>
 </html>
-
