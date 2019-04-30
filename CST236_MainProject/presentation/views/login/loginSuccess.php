@@ -31,7 +31,7 @@ require_once 'securePage.php';
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
-	
+
 <title>Login Success</title>
 </head>
 
@@ -45,6 +45,10 @@ require_once 'securePage.php';
 		<h3 class="text-white mt-1">
 			Login Succeeded. Welcome <em><?php echo $_SESSION['fname'] . "</em>!"?>
 		
+		
+		
+		
+		
 		</h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -53,12 +57,20 @@ require_once 'securePage.php';
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a
+				class="btn-lg btn-secondary border border-warning"
+				href="../../handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Cart"> <i
+					class="fas fa-shopping-cart"></i></a></li>
+			<li class="ml-2 mt-1"><a
+				class="btn-lg btn-secondary border border-warning"
 				href="../../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
-				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a></li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
-				href="login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
-					class="fas fa-sign-out-alt"></i></a></li>
+				role="button" data-toggle="tooltip" title="Account"> <i
+					class="far fa-user-circle"></i></a></li>
+			<li class="ml-2 mt-1"><a
+				class="btn-lg btn-secondary border border-warning"
+				href="login.php?logout='1'" role="button" data-toggle="tooltip"
+				title="Logout"> <i class="fas fa-sign-out-alt"></i></a></li>
 		</ul>
 	</nav>
 
@@ -70,18 +82,21 @@ require_once 'securePage.php';
 
 	
 			<div class="col-sm-12 col-md-6">
-				<div class="card mb-4">
+				<div class="card mb-4 bg-info border border-warning">
 					<div class="card-body text-left">
-						<h5 class="card-title">Administration Controls - TODO!!</h5>
+						<h3 class="card-title text-center">User Administration Controls</h3>
 						<form
 							action="../../../presentation/handlers/userSearchHandler.php">
 							<div class="form-group">
 								<label for="username">Search for a user </label> <input
-									type="text" class="form-control" name="username" id="username"
+									type="text" class="form-control border border-warning" name="username" id="username"
 									aria-describedby="searchHelp" placeholder="Enter email"> <small
-									id="searchHelp" class="form-text text-muted mb-2">Leave blank
-									for all users.</small>
-								<button type="submit" class="btn btn-dark">Search</button>
+									id="searchHelp" class="form-text mb-2">Leave blank for all
+									users.</small>
+								<div class="d-flex justify-content-center">
+									<button type="submit"
+										class="btn btn-dark border border-warning">Search</button>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -95,18 +110,21 @@ else :
 endif;
 ?>
 	    
-				<div class="card mb-4">
+				<div class="card mb-4 bg-info border border-warning">
 					<div class="card-body text-left">
-						<h5 class="card-title">Vehicle Search</h5>
+						<h3 class="card-title text-center">Vehicle Search</h3>
 						<form
 							action="../../../presentation/handlers/ProductSearchHandler.php">
 							<div class="form-group">
 								<label for="pattern">Search by make or model </label> <input
-									type="text" class="form-control" name="pattern"
+									type="text" class="form-control border border-warning" name="pattern"
 									aria-describedby="patternHelp"
 									placeholder="Enter make or model"> <small id="patternHelp"
-									class="form-text text-muted mb-2">Leave blank for all vehicles.</small>
-								<button type="submit" class="btn btn-dark">Search</button>
+									class="form-text mb-2">Leave blank for all vehicles.</small>
+								<div class="d-flex justify-content-center">
+									<button type="submit"
+										class="btn btn-dark border border-warning">Search</button>
+								</div>
 							</div>
 						</form>
 					</div>
@@ -130,8 +148,8 @@ endif;
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		crossorigin="anonymous" type="text/javascript"></script>
 
-<!--  tool tip script -->
-<script>
+	<!--  tool tip script -->
+	<script>
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });

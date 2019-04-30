@@ -15,7 +15,7 @@ hr {
 <div class="container text-center">
 	<div class="row mb-4 justify-content-center">
 		<div class="col-sm-12">
-			<div class="card border-warning mb-3">
+			<div class="card border border-warning mb-3">
 				<div class="card-header bg-dark text-light border-warning">
 					<h1>Edit Account</h1>
 				</div>
@@ -49,7 +49,7 @@ hr {
 								<span class="input-group-text" style="width: 120px" id="email-addon">E-mail</span>
 							</div>
 							<input type="text" class="form-control" name="email" value="<?php echo $user[0]['email'] ?>" 
-							     aria-label="email" aria-describedby="email-addon">
+							     aria-label="email" aria-describedby="email-addon" required>
 						</div>
 						<hr>
 						<div class="input-group mb-3">
@@ -57,7 +57,7 @@ hr {
 								<span class="input-group-text" style="width: 120px" id="fname-addon">First Name</span>
 							</div>
 							<input type="text" class="form-control" name="fname" value="<?php echo $user[0]['fname'] ?>" aria-label="fname"
-								aria-describedby="fname-addon">
+								aria-describedby="fname-addon" required>
 						</div>
 						<hr>
 						<div class="input-group mb-3">
@@ -65,7 +65,7 @@ hr {
 								<span class="input-group-text" style="width: 120px" id="lname-addon">Last Name</span>
 							</div>
 							<input type="text" class="form-control" name="lname" value="<?php echo $user[0]['lname'] ?>" aria-label="lname"
-								aria-describedby="lname-addon">
+								aria-describedby="lname-addon" required>
 						</div>
 						
 						<?php if ($_SESSION['accessLevel'] == 9): //only displays to admin?>
@@ -75,7 +75,7 @@ hr {
 								<span class="input-group-text" style="width: 120px" id="accessLevel-addon">Access Level</span>
 							</div>
 							<input type="text" class="form-control" name="accessLevel" value="<?php echo $user[0]['accessLevel'] ?>" aria-label="accessLevel"
-								aria-describedby="accessLevel-addon">
+								aria-describedby="accessLevel-addon" required>
 							<div class="input-group-append">
 								<span class="input-group-text">Note: 0 = User, 9 = Full Admin</span>
 							</div>
@@ -86,8 +86,8 @@ hr {
 						<?php endif; ?>
 						
 					</div>
-					<div class="card-footer bg-dark text-light border-warning">
-						<button class="btn btn-secondary" data-toggle="confirmation" name="userEditSave" type="submit">Submit</button>
+					<div class="card-footer bg-dark text-light border border-warning">
+						<button class="btn btn-secondary border border-warning" data-toggle="confirmation" name="userEditSave" type="submit">Submit</button>
 					</div>
 				</form>
 			</div>

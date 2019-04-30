@@ -66,15 +66,19 @@ $user = $userService->findByID($id);
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">			
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/loginSuccess.php"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Cart"> <i
+					class="fas fa-shopping-cart"></i></a></li>
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
 					class="fas fa-sign-out-alt"></i></a>
 			</li>
@@ -92,7 +96,7 @@ if (isset($_SESSION['cantRemoveAdmin'])):
 		<div class="col-sm-12 col-md-6">
 			<div class="card mb-4">
 				<div class="card-body text-center text-light bg-danger">
-					<h3 class="card-title">Primary admin account (ID #2) cannot remove admin role!</h3>					
+					<h3 class="card-title">Primary admin account (ID #2) cannot remove admin role or be deleted!</h3>					
 				</div>
 			</div>
 		</div>
@@ -104,17 +108,22 @@ if (isset($_SESSION['cantRemoveAdmin'])):
 unset($_SESSION['cantRemoveAdmin']);
 endif;
 
-//TODO make user edit save message and display here
-
 if (isset($_SESSION['editUser']) && $_SESSION['editUser'] == true){
     unset($_SESSION['editUser']);
     include ('_displayEditUser.php');
 }
 else if ($user){
     
-    if (isset($_SESSION['editUserSave'])){
+    if (isset($_SESSION['editUserSave']) || isset($_SESSION['editAddressSave'])){
+        if ((isset($_SESSION['editUserSave']) && $_SESSION['editUserSave'] == true) || isset($_SESSION['editAddressSave'])){
         unset($_SESSION['editUserSave']);
+        unset($_SESSION['editAddressSave']);
         include ('_editProductSuccess.php');
+        }
+        else {
+            unset($_SESSION['editUserSave']);
+            include ('_editFail.php');
+        }
     }
     include('_displaySelectUser.php');
 }

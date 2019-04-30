@@ -58,15 +58,19 @@ $product = $dbservice->findByVin($vin);
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">		
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../handlers/ProductSearchHandler.php?pattern=<?php echo $_SESSION['searchPattern']?>"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Cart"> <i
+					class="fas fa-shopping-cart"></i></a></li>
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
 					class="fas fa-sign-out-alt"></i></a>
 			</li>
@@ -91,7 +95,7 @@ if ($product){
 <div class="container text-center">
 	<div class="row mb-4 justify-content-center">
 		<div class="col-sm-12 col-md-6">
-			<div class="card mb-4">
+			<div class="card mb-4 border border-warning">
 				<div class="card-body text-left bg-info">
 					<h5 class="card-title">Product Admin Controls</h5>
 						<form action="productAdminHandler.php" method="post">
@@ -102,7 +106,7 @@ if ($product){
 								<option class="bg-danger" value="2">Delete (WARNING - CAN'T BE UNDONE!)</option>
 							</select>
 							<div class="input-group-append">
-								<button class="btn btn-dark" data-toggle="confirmation" type="submit">Submit</button>
+								<button class="btn btn-dark border border-warning" data-toggle="confirmation" type="submit">Submit</button>
 							</div>
 						</div>
 					</form>

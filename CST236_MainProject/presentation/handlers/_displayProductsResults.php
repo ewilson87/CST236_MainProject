@@ -1,5 +1,5 @@
 <div class="container mb-4">
-	<table id="mydatatable" class="table table-striped table-bordered table-hover table-responsive">
+	<table id="mydatatable" class="table table-striped table-bordered table-hover table-responsive border border-warning">
 	<col width="7%">
     <col width="40%">
     <col width="40%">
@@ -18,14 +18,15 @@
 
 <?php
 
+//Have to cast $products as an array to run the count function
 for ($x = 0; $x < count((array)$products); $x++){
 
     ?>
 <tr>
 	<td class="text-center">
-		<form action="productSelectHandler.php?vin= method="get">
+		<form action="productSelectHandler.php? method="get">
         	<input type="hidden" id="vin" name="vin" value="<?php echo $products[$x]['carVin'] ?>">
-        	<button type="submit" class="btn-sm btn-secondary" role="button"><?php echo $products[$x]['ID']; ?></button>
+        	<button type="submit" class="btn-sm btn-secondary border border-warning" role="button"><?php echo $products[$x]['ID']; ?></button>
         </form>
 	</td>
           
@@ -53,6 +54,7 @@ for ($x = 0; $x < count((array)$products); $x++){
 </tfoot>
 </table>
 </div>
+
 
 
 

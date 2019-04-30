@@ -61,5 +61,38 @@ class UserBusinessService
         
     }
     
+    public function addAddress($Address){
+        
+        $dbservice = new UserDataService();
+        
+        return $dbservice->addAddress($Address);
+        
+    }
+    
+    public function editAddress($Address){
+        
+        $dbservice = new UserDataService();
+        
+        return $dbservice->editAddress($Address);
+        
+    }
+    
+    public function addToCart($userID, $addressID, $productID){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->addToCart($userID, $addressID, $productID);
+    }
+    
+    public function getCartByUserID($userID){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->getCartByUserID($userID);
+    }
+    
+    public function removeFromCart($userID, $productID){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->removeFromCart($userID, $productID);
+    }
 }
 

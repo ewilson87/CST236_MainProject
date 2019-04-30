@@ -57,15 +57,19 @@ $users = $dbservice->SearchByUsername($userSearch);
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/loginSuccess.php"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Cart"> <i
+					class="fas fa-shopping-cart"></i></a></li>
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
 					class="fas fa-sign-out-alt"></i></a>
 			</li>

@@ -5,7 +5,7 @@ require_once '../../Autoloader.php';
 ?>
 
 <div class="container mb-4">
-	<table id="mydatatable" class="table table-striped table-bordered table-hover table-responsive">
+	<table id="mydatatable" class="table table-striped table-bordered table-hover table-responsive border border-warning">
 	<col width="7%">
     <col width="22%">
     <col width="35%">
@@ -32,7 +32,7 @@ require_once '../../Autoloader.php';
 	<td class="text-center">
 		<form action="userSelectHandler.php" method="post">
         	<input type="hidden" id="ID" name="ID" value="<?php echo $users[$x]['ID'] ?>">
-        	<button type="submit" class="btn-sm btn-secondary" data-toggle="confirmation" role="button"><?php echo $users[$x]['ID']; ?></button>
+        	<button type="submit" class="btn-sm btn-secondary border border-warning" data-toggle="confirmation" role="button"><?php echo $users[$x]['ID']; ?></button>
         </form>
 	</td>
           

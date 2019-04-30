@@ -17,6 +17,14 @@ if (isset($_GET['logout'])) {
     unset($_SESSION['principle']);
     header("location: login.php");
 }
+else if (isset($_SESSION['setAddress'])){
+    //redirect to set address
+    header("location: addAddress.php");
+}
+else if (isset($_SESSION['principle']) && $_SESSION['principle'] == true){
+    //redirect to login success
+    header("location: loginSuccess.php");
+}
 
 ?>
 
@@ -60,7 +68,7 @@ hr {
 		</nav>
 		
 <div class="container">
-		<div class="jumbotron">
+		<div class="jumbotron border border-warning">
 			<h1 class="display-3">Welcome to Wilson's (fake) Autos!</h1>
 			<hr>
 			<h1 class="display-4 text-center">The only place you can buy outrageous priced vehicles online!</h1>
@@ -70,7 +78,7 @@ hr {
 				Application Programming II <br>Developed by: Evan Wilson
 			</p>
 			<p class="text-center">
-				<a class="btn btn-dark btn-lg" target="_blank"
+				<a class="btn btn-dark btn-lg border border-warning" target="_blank"
 					rel="noopener noreferrer"
 					href="https://www.gcu.edu/degree-programs/bachelor-science-computer-programming"
 					role="button">Learn more at GCU</a>
@@ -83,23 +91,25 @@ hr {
 <div class="container">
 		<div class="row mb-4">
 			<div class="col-sm-12 col-md-6">
-				<div class="card">
+				<div class="card bg-info border border-warning">
 					<div class="card-body text-left">
 						<h5 class="card-title">Login</h5>
 						<form method="post" action="login.php">
 							<div class="form-group">
 								<label for="LoginUser">Username or Email</label> <input
-									type="text" class="form-control" name="LoginUser" id="LoginUser"
-									aria-describedby="emailHelp" placeholder="Enter email"> <small
-									id="emailHelp" class="form-text text-muted">We'll never share
+									type="text" class="form-control border border-warning" name="LoginUser" id="LoginUser"
+									aria-describedby="emailHelp" placeholder="Enter email" required> <small
+									id="emailHelp" class="form-text">We'll never share
 									your email with anyone else.</small>
 							</div>
 							<div class="form-group">
 								<label for="LoginPassword">Password</label> <input
-									type="password" class="form-control" name="LoginPassword" id="LoginPassword"
-									placeholder="Password">
+									type="password" class="form-control border border-warning" name="LoginPassword" id="LoginPassword"
+									placeholder="Password" required>
 							</div>
-							<button type="submit" class="btn btn-dark" name="login_user">Login</button>
+							<div class="d-flex justify-content-center">
+							<button type="submit" class="btn btn-dark border border-warning" name="login_user">Login</button>
+							</div>
 						</form>
 
 					</div>
@@ -107,44 +117,46 @@ hr {
 			</div>
 
 			<div class="col-sm-12 col-md-6">
-				<div class="card">
+				<div class="card bg-info border border-warning">
 					<div class="card-body text-left">
 						<h5 class="card-title">Register New User</h5>
 
 						<form method="post" action="login.php">
 							<div class="form-group">
 								<label for="RegisterEmail">Email address</label> <input
-									type="email" class="form-control" name="email" id="RegisterEmail"
-									aria-describedby="emailHelp" placeholder="Enter email"> <small
-									id="emailHelp" class="form-text text-muted">We'll never share
+									type="email" class="form-control border border-warning" name="email" id="RegisterEmail"
+									aria-describedby="emailHelp" placeholder="Enter email" required> <small
+									id="emailHelp" class="form-text">We'll never share
 									your email with anyone else.</small>
 							</div>
 							<div class="form-group">
 								<label for="RegisterUsername">Username</label> <input
-									type="text" class="form-control" name="username" id="RegisterUsername"
-									aria-describedby="emailHelp" placeholder="Enter username">
+									type="text" class="form-control border border-warning" name="username" id="RegisterUsername"
+									aria-describedby="emailHelp" placeholder="Enter username" required>
 							</div>
 							<div class="form-group">
 								<label for="RegisterFname">First Name</label> <input type="text"
-									class="form-control" name="fname" id="RegisterFname"
-									aria-describedby="emailHelp" placeholder="Enter First Name">
+									class="form-control border border-warning" name="fname" id="RegisterFname"
+									aria-describedby="emailHelp" placeholder="Enter First Name" required>
 							</div>
 							<div class="form-group">
 								<label for="RegisterLname">Last Name</label> <input type="text"
-									class="form-control" name="lname" id="RegisterLname"
-									aria-describedby="emailHelp" placeholder="Enter Last Name">
+									class="form-control border border-warning" name="lname" id="RegisterLname"
+									aria-describedby="emailHelp" placeholder="Enter Last Name" required>
 							</div>
 							<div class="form-group">
 								<label for="RegisterPassword1">Password</label> <input
-									type="password" class="form-control" name="password_1" id="RegisterPassword1"
-									placeholder="Password">
+									type="password" class="form-control border border-warning" name="password_1" id="RegisterPassword1"
+									placeholder="Password" required>
 							</div>
 							<div class="form-group">
 								<label for="RegisterPassword2">Confirm Password</label> <input
-									type="password" class="form-control" name="password_2" id="RegisterPassword2"
-									placeholder="Confirm Password">
+									type="password" class="form-control border border-warning" name="password_2" id="RegisterPassword2"
+									placeholder="Confirm Password" required>
 							</div>
-							<button type="submit" class="btn btn-dark" name="reg_user">Register</button>
+							<div class="d-flex justify-content-center">
+							<button type="submit" class="btn btn-dark border border-warning" name="reg_user">Register</button>
+							</div>
 						</form>
 
 					</div>

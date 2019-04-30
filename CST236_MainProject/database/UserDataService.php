@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -15,45 +14,48 @@ class UserDataService
 
     public function __construct()
     {}
-    
-    public function findByFirstName($pattern){
-        
+
+    public function findByFirstName($pattern)
+    { // delete if not used later
         $db = new Database();
-        
+
         $mysqli = $db->getConnection();
 
         $query = $mysqli->prepare("SELECT * FROM users WHERE fname LIKE ?");
-        
-        //bind parameters for markers
+
+        // bind parameters for markers
         $like_pattern = "%" . $pattern . "%";
-        
+
         $query->bind_param('s', $like_pattern);
-        
-        //execute query
+
+        // execute query
         $query->execute();
-        
-        //get results
+
+        // get results
         $result = $query->get_result();
 
-        if (!$result){
+        if (! $result) {
             echo "Error in the SQL statement";
             return NULL;
-            exit;
+            exit();
         }
-        
-        if ($result->num_rows == 0){
+
+        if ($result->num_rows == 0) {
             return NULL;
-        }
-        else {
+        } else {
             $index = 0;
             $users_array = array();
-                
-            while ($row = $result->fetch_assoc()){
-                $users_array[$index] = array($row["ID"], $row["username"], ($row["fname"] . " " . $row['lname']));
-                $index++;
+
+            while ($row = $result->fetch_assoc()) {
+                $users_array[$index] = array(
+                    $row["ID"],
+                    $row["username"],
+                    ($row["fname"] . " " . $row['lname'])
+                );
+                $index ++;
             }
-            
-            //frees result set and closes connection
+
+            // frees result set and closes connection
             $result->free();
             $mysqli->close();
 
@@ -62,145 +64,282 @@ class UserDataService
             return NULL;
         }
     }
-    
-    public function findByUsername($pattern){
-        
+
+    public function findByUsername($pattern)
+    {
         $db = new Database();
-        
+
         $conn = $db->getConnection();
-        
-        $stmt = $conn->prepare("SELECT ID, username, fname, lname, email, accessLevel FROM users WHERE username LIKE ?");
-        
-        if (!$stmt){
+
+        $stmt = $conn->prepare("SELECT * FROM users LEFT JOIN addresses on users.ID = addresses.addressID WHERE username LIKE ?");
+
+        if (! $stmt) {
             echo "Something is wrong in the binding process. SQL Error?";
-            exit;
+            exit();
         }
-        
-        //bind params
+
+        // bind params
         $like_pattern = "%" . $pattern . "%";
         $stmt->bind_param('s', $like_pattern);
-        
-        //execute query
+
+        // execute query
         $stmt->execute();
-        
-        
-        //get results
+
+        // get results
         $result = $stmt->get_result();
-        
-        if (!$result){
+
+        if (! $result) {
             echo "Error in the SQL statement";
             return NULL;
-            exit;
+            exit();
         }
-        
-        if ($result->num_rows == 0){
+
+        if ($result->num_rows == 0) {
             return NULL;
-        }
-        else {
+        } else {
             $users_array = array();
-            
-            while ($user = $result->fetch_assoc()){
+
+            while ($user = $result->fetch_assoc()) {
                 array_push($users_array, $user);
             }
             return $users_array;
         }
-            
     }
-    
-    public function findByID($id){
-        
+
+    public function findByID($id)
+    {
         $db = new Database();
-        
+
         $conn = $db->getConnection();
-        
-        $stmt = $conn->prepare("SELECT ID, username, fname, lname, email, accessLevel FROM users WHERE ID = ?");
-        
-        //bind params
+
+        $stmt = $conn->prepare("SELECT * FROM users LEFT JOIN addresses on users.ID = addresses.addressID WHERE ID = ?");
+
+        // bind params
         $stmt->bind_param('i', $id);
-        
-        //execute query
+
+        // execute query
         $stmt->execute();
-        
-        
-        //get results
+
+        // get results
         $result = $stmt->get_result();
-        
-        if (!$result){
+
+        if (! $result) {
             echo "Error in the SQL statement";
             return NULL;
-            exit;
+            exit();
         }
-        
-        if ($result->num_rows == 0){
+
+        if ($result->num_rows == 0) {
             return NULL;
-        }
-        else {
+        } else {
             $users_array = array();
-            
-            while ($user = $result->fetch_assoc()){
+
+            while ($user = $result->fetch_assoc()) {
                 array_push($users_array, $user);
             }
             return $users_array;
         }
-        
     }
-    
-    public function updateUser($id, $username, $password, $fname, $lname, $email, $accessLevel){
-        
+
+    public function updateUser($id, $username, $password, $fname, $lname, $email, $accessLevel)
+    {
         $db = new \Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("UPDATE users SET
+
+        // first check the database to make sure
+        // a user does not already exist with the same username and/or email
+        $user_check_query = "SELECT * FROM users WHERE email='$email' LIMIT 1";
+        $result = mysqli_query($connection, $user_check_query);
+        $user = mysqli_fetch_assoc($result);
+
+        if ($user) { // if user exists
+            $_SESSION['editFailReason'] = "That e-mail is already used.";
+            return false;
+        } 
+        else {
+
+            $stmt = $connection->prepare("UPDATE users SET
                                         password = ?,
                                         fname = ?,
                                         lname = ?,
                                         email = ?,
                                         accessLevel = ?
                                     WHERE ID = ?
-                                    AND username = ?"); //Helps prevent unauthorized changes by injecting just known username or ID, by making changes have to match both
-                                                        //i.e. users only know their username, not corresponding ID, and can't update random ID without knowing the username
-                                                        //it belongs to
-        
-        if (!$stmt){
-            echo "Something is wrong in the binding process. SQL Error?";
-            exit;
+                                    AND username = ?"); // Helps prevent unauthorized changes by injecting just known username or ID, by making changes have to match both
+                                                        // i.e. users only know their username, not corresponding ID, and can't update random ID without knowing the username
+                                                        // it belongs to
+
+            if (! $stmt) {
+                echo "Something is wrong in the binding process. SQL Error?";
+                exit();
+            }
+
+            // bind params
+            $stmt->bind_param('ssssiis', $password, $fname, $lname, $email, $accessLevel, $id, $username);
+
+            // execute query
+            if ($stmt->execute()) {
+                return true;
+            } else {
+                
+                return false;
+                // TODO
+            }
         }
-        
-        //bind params
-        $stmt->bind_param('ssssiis', $password, $fname, $lname, $email, $accessLevel, $id, $username);
-        
-        //execute query        
-        if ($stmt->execute()){
-            return true;
-        }
-        else {
-            return false;
-            //TODO
-        }
-        
     }
-    
-    public function deleteUserByID($id){
+
+    public function deleteUserByID($id)
+    {
         $db = new \Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("DELETE FROM users WHERE ID = ?");
-        
-        if (!$stmt){
+
+        if (! $stmt) {
             echo "Something is wrong in the binding process. SQL Error?";
-            exit;
+            exit();
         }
-        
-        //bind params
+
+        // bind params
         $stmt->bind_param('i', $id);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            echo "Error deleting User from database";
+            return false;
+            // TODO
+        }
+    }
+
+    public function addAddress($Address)
+    {
+        $db = new \Database();
+        $connection = $db->getConnection();
+
+        $addressType = mysqli_real_escape_string($connection, $Address->getAddressType());
+        $isDefault = mysqli_real_escape_string($connection, $Address->getIsDefault());
+        $userID = mysqli_real_escape_string($connection, $Address->getUserID());
+        $street1 = mysqli_real_escape_string($connection, $Address->getStreet1());
+        $street2 = mysqli_real_escape_string($connection, $Address->getStreet2());
+        $city = mysqli_real_escape_string($connection, $Address->getCity());
+        $state = mysqli_real_escape_string($connection, $Address->getState());
+        $postalCode = mysqli_real_escape_string($connection, $Address->getPostalCode());
+
+        $stmt = "INSERT INTO addresses (addressID, addressType, isDefault, userID, street1, street2, city, state, postalCode)
+  			  VALUES('$userID', '$addressType', '$isDefault', '$userID', '$street1', '$street2', '$city', '$state', '$postalCode')";
+
         
-        if ($stmt->execute()){
+        if (mysqli_query($connection, $stmt)) {
+        return true;
+        }
+        else {
+         return false;   
+        }
+    }
+
+    public function editAddress($Address)
+    {
+        $db = new \Database();
+        $connection = $db->getConnection();
+
+        $addressType = mysqli_real_escape_string($connection, $Address->getAddressType());
+        $isDefault = mysqli_real_escape_string($connection, $Address->getIsDefault());
+        $street1 = mysqli_real_escape_string($connection, $Address->getStreet1());
+        $street2 = mysqli_real_escape_string($connection, $Address->getStreet2());
+        $city = mysqli_real_escape_string($connection, $Address->getCity());
+        $state = mysqli_real_escape_string($connection, $Address->getState());
+        $postalCode = mysqli_real_escape_string($connection, $Address->getPostalCode());
+        $ID = $_POST['ID'];
+
+        $stmt = "UPDATE addresses
+                 SET 
+                    addressType = '$addressType', isDefault = '$isDefault', street1 = '$street1', street2 = '$street2', city = '$city', state = '$state', postalCode = '$postalCode'
+                 WHERE 
+                    userID = '$ID'";
+        
+        $connection->query($stmt);
+
+        if ($connection->affected_rows == 1) {
             return true;
         }
         else {
+            return $this->addAddress($Address);
+        }
+    }
+
+    public function addToCart($userID, $addressID, $productID)
+    {
+        $db = new \Database();
+        $connection = $db->getConnection();
+
+        $stmt = "SELECT * FROM cart WHERE userID ='$userID' AND productID = '$productID'";
+        $result = mysqli_query($connection, $stmt);
+        $cart = mysqli_fetch_assoc($result);
+
+        if ($cart) { // if that user already has that product in cart
+            return false;
+        } else {
+            $stmt = "INSERT INTO cart (userID, addressID, productID) VALUES ('$userID', '$addressID', '$productID')";
+            mysqli_query($connection, $stmt);
+
+            return true;
+        }
+    }
+
+    public function getCartByUserID($userID)
+    {
+        $db = new \Database();
+        $conn = $db->getConnection();
+
+        $stmt = $conn->prepare("SELECT * FROM cart LEFT JOIN products on cart.productID = products.ID WHERE userID = ?");
+
+        // bind params
+        $stmt->bind_param('i', $userID);
+
+        // execute query
+        $stmt->execute();
+
+        // get results
+        $result = $stmt->get_result();
+
+        if (! $result) {
+            echo "Error in the SQL statement";
+            return NULL;
+            exit();
+        }
+
+        if ($result->num_rows == 0) {
+            return NULL;
+        } else {
+            $cart_array = array();
+
+            while ($cart = $result->fetch_assoc()) {
+                array_push($cart_array, $cart);
+            }
+            return $cart_array;
+        }
+    }
+
+    public function removeFromCart($userID, $productID)
+    {
+        $db = new \Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("DELETE FROM cart WHERE userID = ? AND productID = ?");
+
+        if (! $stmt) {
+            echo "Something is wrong in the binding process. SQL Error?";
+            exit();
+        }
+
+        // bind params
+        $stmt->bind_param('ii', $userID, $productID);
+
+        if ($stmt->execute()) {
+            return true;
+        } else {
             echo "Error deleting User from database";
             return false;
-            //TODO
+            // TODO
         }
-        
     }
 }
-

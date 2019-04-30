@@ -1,5 +1,4 @@
 <?php
-namespace businessService\model;
 
 class Address
 {
@@ -8,17 +7,18 @@ class Address
     private $addressType;
     private $isDefault;
     private $userID;
-    private $street;
+    private $street1;
+    private $street2;
     private $city;
     private $state;
     private $postalCode;
 
-    public function __construct($id, $addressType, $isDefault, $userID, $street, $city, $state, $postalCode){
-        $this->id = $id;
+    public function __construct($addressType, $isDefault, $userID, $street1, $street2, $city, $state, $postalCode){
         $this->addressType = $addressType;
         $this->isDefault = $isDefault;
         $this->userID = $userID;
-        $this->street = $street;
+        $this->street1 = $street1;
+        $this->street2 = $street2;
         $this->city = $city;
         $this->state = $state;
         $this->postalCode = $postalCode;
@@ -59,9 +59,17 @@ class Address
     /**
      * @return mixed
      */
-    public function getStreet()
+    public function getStreet1()
     {
-        return $this->street;
+        return $this->street1;
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getStreet2()
+    {
+        return $this->street2;
     }
 
     /**
@@ -123,9 +131,17 @@ class Address
     /**
      * @param mixed $street
      */
-    public function setStreet($street)
+    public function setStreet1($street1)
     {
-        $this->street = $street;
+        $this->street1 = $street1;
+    }
+    
+    /**
+     * @param mixed $street
+     */
+    public function setStreet2($street2)
+    {
+        $this->street2 = $street2;
     }
 
     /**
@@ -150,6 +166,11 @@ class Address
     public function setPostalCode($postalCode)
     {
         $this->postalCode = $postalCode;
+    }
+    
+    public function print(){
+        echo "<br>" . $this->getId() . " " . $this->getAddressType() . " " . $this->getIsDefault() . " " . $this->getStreet1() . " " . $this->getStreet2() . " " . 
+        $this->getUserID() . " " . $this->getCity() . " " . $this->getState() . " " . $this->getPostalCode() . "<br>";
     }
     
 }

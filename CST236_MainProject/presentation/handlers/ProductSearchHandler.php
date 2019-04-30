@@ -11,6 +11,7 @@ $_SESSION['searchPattern'] = $searchPattern;
 
 $dbservice = new ProductBusinessService();
 
+//returns an array of products from the database
 $products = $dbservice->findByMakeOrModel($searchPattern);
 ?>
 
@@ -56,15 +57,19 @@ $products = $dbservice->findByMakeOrModel($searchPattern);
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/loginSuccess.php"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Cart"> <i
+					class="fas fa-shopping-cart"></i></a></li>
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
 					class="fas fa-sign-out-alt"></i></a>
 			</li>
@@ -74,13 +79,39 @@ $products = $dbservice->findByMakeOrModel($searchPattern);
 
 
 <?php
-if (isset($_SESSION['deleteSuccess']) && $_SESSION['deleteSuccess'] == true){
+if (isset($_SESSION['cartAddFail'])):
+
+?>
+
+<div class="container text-center mb-4">
+	<div class="row mb-4 justify-content-center">
+		<div class="col-sm-12 col-md-6">
+			<div class="card mb-4">
+				<div class="card-body text-center text-light bg-danger">
+					<h3 class="card-title">That item is already in your cart!</h3>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<?php 
+unset($_SESSION['cartAddFail']);
+endif;
+
+if (isset($_SESSION['addSave']) && $_SESSION['addSave'] == true){
+    unset($_SESSION['addSave']);
+    
+    include ('_cartAddSuccess.php');
+}
+else if (isset($_SESSION['deleteSuccess']) && $_SESSION['deleteSuccess'] == true){
     unset($_SESSION['deleteSuccess']);
     
     include ('_deleteSuccess.php');
 }
 
-
+//if array is not empty
 if ($products) {
     include ('_displayProductsResults.php');
 } else {
