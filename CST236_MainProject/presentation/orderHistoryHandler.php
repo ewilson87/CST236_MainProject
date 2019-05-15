@@ -1,5 +1,4 @@
 <?php
-
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -7,18 +6,7 @@ require_once '../../header.php';
 require_once '../../Autoloader.php';
 require_once 'handlersSecurePage.php';
 
-if ($_SESSION['accessLevel'] == 9){
-    $userSearch = $_GET['username'];
-$_SESSION['userSearch'] = $userSearch;
-
 $dbservice = new UserBusinessService();
-
-$users = $dbservice->SearchByUsername($userSearch);
-}
-else {
-    session_destroy();
-    header("Location: ../views/login/login.php");
-}
 
 ?>
 
@@ -44,28 +32,19 @@ else {
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
-	
-	<style>
-hr {
-	border: 0;
-	height: 1px;
-	background-image: linear-gradient(to right, rgba(0, 0, 0, 0),
-		rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-}
-</style>
 
-<title>User Search Results</title>
+<title>Order History</title>
 </head>
 
 <body>
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
-		<a class="navbar-brand" href="#"><img
+		<a class="navbar-brand" href="../../../index.php"><img
 			src="../views/images/wLogo.png" class="img-fluid img-thumbnail mr-2" alt=""
 			width="40" height="40" class="d-inline-block align-top"
 			style="margin-right: 5px"></a>
-			<h3 class="text-white mt-1">User Search <?php echo $userSearch ?></h3>
+			<h3 class="text-white mt-1">Order Details History</h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarSupportedContent">
@@ -73,51 +52,40 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/loginSuccess.php"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
-			<li class="nav-item dropdown ml-2"><a
-				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
-				style="height: 45px" href="#" id="navbarDropdown" role="button"
-				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
-					class="far fa-user-circle"></i>
-			</a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-					<a class="dropdown-item"
-						href="userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>">Account</a>
-					<hr>
-					<a class="dropdown-item" href="displayOrders.php">Orders</a>
-				</div></li>
-			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Cart"> <i
 					class="fas fa-shopping-cart"></i></a></li>
-			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a>
+			</li>
+			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
 					class="fas fa-sign-out-alt"></i></a>
 			</li>
 		</ul>
 	</nav>
 
+
 <?php 
 
-if (isset($_SESSION['deleteUserSuccess'])){
-    unset($_SESSION['deleteUserSuccess']);
-    include('_deleteSuccess.php');
-}
-
-if ($users){
-   
-    include('_displayAllUsers.php');
-}
-else {
-    echo "No users found with that username";
+//if array is not empty
+if ($ordersHistory) {
+    include ('_displayOrdersHistory.php');
+} else {
+    echo "You have no orders history";
 }
 
 ?>
 
 
+
+		
 			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
@@ -134,8 +102,7 @@ else {
 	<!--  Datatables JavaScript -->
 	<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
-
-<!--  Datatables script -->	
+<!--  Datatable script -->	
 <script>
 $(document).ready( function () {
     $('#mydatatable').DataTable();

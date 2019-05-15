@@ -38,6 +38,15 @@ $product = $dbservice->findByVin($vin);
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
+	
+	<style>
+hr {
+	border: 0;
+	height: 1px;
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0),
+		rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+</style>
 
 <title>Product Search Results</title>
 </head>
@@ -46,7 +55,7 @@ $product = $dbservice->findByVin($vin);
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
-		<a class="navbar-brand" href="../../../index.php"><img
+		<a class="navbar-brand" href="#"><img
 			src="../views/images/wLogo.png" class="img-fluid img-thumbnail mr-2" alt=""
 			width="40" height="40" class="d-inline-block align-top"
 			style="margin-right: 5px"></a>
@@ -58,19 +67,27 @@ $product = $dbservice->findByVin($vin);
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">		
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
 				href="../handlers/ProductSearchHandler.php?pattern=<?php echo $_SESSION['searchPattern']?>"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>
 			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+			<li class="nav-item dropdown ml-2"><a
+				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
+				style="height: 45px" href="#" id="navbarDropdown" role="button"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+					class="far fa-user-circle"></i>
+			</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item"
+						href="userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>">Account</a>
+					<hr>
+					<a class="dropdown-item" href="displayOrders.php">Orders</a>
+				</div></li>
+			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
 				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Cart"> <i
 					class="fas fa-shopping-cart"></i></a></li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
-				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
-				role="button" data-toggle="tooltip" title="Account"> <i class="far fa-user-circle"></i></a>
-			</li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"  data-toggle="tooltip" title="Logout"> <i
 					class="fas fa-sign-out-alt"></i></a>
 			</li>

@@ -10,7 +10,7 @@ $dbservice = new UserBusinessService();
 
 // if viewcart is set
 if (isset($_GET['viewCart'])) {
-    $userID = $_GET['ID'];
+    $userID = $_SESSION['ID'];
     $cart = $dbservice->getCartByUserID($userID);
 } else {
     $userID = $_SESSION['ID'];
@@ -62,6 +62,15 @@ if (isset($add)) {
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
+	
+	<style>
+hr {
+	border: 0;
+	height: 1px;
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0),
+		rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+</style>
 
 <title>Cart</title>
 </head>
@@ -82,17 +91,24 @@ if (isset($add)) {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-1"><a
+			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../handlers/ProductSearchHandler.php?pattern=" role="button"
 				data-toggle="tooltip" title="Back"> <i
 					class="fas fa-arrow-circle-left"></i></a></li>
-			<li class="ml-2 mt-1"><a
-				class="btn-lg btn-secondary border border-warning"
-				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
-				role="button" data-toggle="tooltip" title="Account"> <i
-					class="far fa-user-circle"></i></a></li>
-			<li class="ml-2 mt-1"><a
+					<li class="nav-item dropdown ml-2"><a
+				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
+				style="height: 45px" href="#" id="navbarDropdown" role="button"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+					class="far fa-user-circle"></i>
+			</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item"
+						href="userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>">Account</a>
+					<hr>
+					<a class="dropdown-item" href="displayOrders.php">Orders</a>
+				</div></li>
+			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"
 				data-toggle="tooltip" title="Logout"> <i class="fas fa-sign-out-alt"></i></a>
@@ -108,11 +124,26 @@ if (isset($add)) {
     }
     
     if ($cart){
+        if (isset($_SESSION['editFailReason'])){
+            include ('_editFail.php'); //
+            unset($_SESSION['editFailReason']);
+        }
         include('_displayCart.php');
+    ?>
+    <div class="container text-center">
+		<div class="row mb-4 justify-content-center">
+		<div class="col">
+            <a class="btn-lg btn-secondary border border-warning mx-auto"
+    				href="../../presentation/handlers/checkoutHandler.php?cart=true"
+    				role="button" data-toggle="tooltip" title="checkout">Checkout</a>
+		</div>
+	</div></div>
+    <?php 
     }
     else {
         $_SESSION['editFailReason'] = "Nothing in your cart";
         include ('_editFail.php'); //
+        unset($_SESSION['editFailReason']);
     }
 
 

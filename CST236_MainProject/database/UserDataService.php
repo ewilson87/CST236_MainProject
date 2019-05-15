@@ -11,15 +11,17 @@ require_once '../../Autoloader.php';
 
 class UserDataService
 {
-
+    private $conn;
+    
     public function __construct()
-    {}
+    {
+        $db = new Database();
+        $this->conn = $db->getConnection();
+    }
 
     public function findByFirstName($pattern)
     { // delete if not used later
-        $db = new Database();
-
-        $mysqli = $db->getConnection();
+        $mysqli = $this->conn;
 
         $query = $mysqli->prepare("SELECT * FROM users WHERE fname LIKE ?");
 
@@ -67,9 +69,7 @@ class UserDataService
 
     public function findByUsername($pattern)
     {
-        $db = new Database();
-
-        $conn = $db->getConnection();
+        $conn = $this->conn;
 
         $stmt = $conn->prepare("SELECT * FROM users LEFT JOIN addresses on users.ID = addresses.addressID WHERE username LIKE ?");
 
@@ -108,9 +108,7 @@ class UserDataService
 
     public function findByID($id)
     {
-        $db = new Database();
-
-        $conn = $db->getConnection();
+        $conn = $this->conn;
 
         $stmt = $conn->prepare("SELECT * FROM users LEFT JOIN addresses on users.ID = addresses.addressID WHERE ID = ?");
 
@@ -143,8 +141,7 @@ class UserDataService
 
     public function updateUser($id, $username, $password, $fname, $lname, $email, $accessLevel)
     {
-        $db = new \Database();
-        $connection = $db->getConnection();
+        $connection = $this->conn;
 
         // first check the database to make sure
         // a user does not already exist with the same username and/or email
@@ -190,8 +187,7 @@ class UserDataService
 
     public function deleteUserByID($id)
     {
-        $db = new \Database();
-        $connection = $db->getConnection();
+        $connection = $this->conn;
         $stmt = $connection->prepare("DELETE FROM users WHERE ID = ?");
 
         if (! $stmt) {
@@ -213,8 +209,7 @@ class UserDataService
 
     public function addAddress($Address)
     {
-        $db = new \Database();
-        $connection = $db->getConnection();
+        $connection = $this->conn;
 
         $addressType = mysqli_real_escape_string($connection, $Address->getAddressType());
         $isDefault = mysqli_real_escape_string($connection, $Address->getIsDefault());
@@ -239,8 +234,7 @@ class UserDataService
 
     public function editAddress($Address)
     {
-        $db = new \Database();
-        $connection = $db->getConnection();
+        $connection = $this->conn;
 
         $addressType = mysqli_real_escape_string($connection, $Address->getAddressType());
         $isDefault = mysqli_real_escape_string($connection, $Address->getIsDefault());
@@ -269,14 +263,19 @@ class UserDataService
 
     public function addToCart($userID, $addressID, $productID)
     {
-        $db = new \Database();
-        $connection = $db->getConnection();
+        if (strlen($addressID) <= 0 || $addressID == NULL){
+            $_SESSION['editFailReason'] = "Cannot add items to cart before entering valid address.";
+            return false;
+        }
+        
+        $connection = $this->conn;
 
         $stmt = "SELECT * FROM cart WHERE userID ='$userID' AND productID = '$productID'";
         $result = mysqli_query($connection, $stmt);
         $cart = mysqli_fetch_assoc($result);
 
         if ($cart) { // if that user already has that product in cart
+            $_SESSION['editFailReason'] = "That item is already in your cart.";
             return false;
         } else {
             $stmt = "INSERT INTO cart (userID, addressID, productID) VALUES ('$userID', '$addressID', '$productID')";
@@ -288,8 +287,7 @@ class UserDataService
 
     public function getCartByUserID($userID)
     {
-        $db = new \Database();
-        $conn = $db->getConnection();
+        $conn = $this->conn;
 
         $stmt = $conn->prepare("SELECT * FROM cart LEFT JOIN products on cart.productID = products.ID WHERE userID = ?");
 
@@ -322,8 +320,7 @@ class UserDataService
 
     public function removeFromCart($userID, $productID)
     {
-        $db = new \Database();
-        $connection = $db->getConnection();
+        $connection = $this->conn;
         $stmt = $connection->prepare("DELETE FROM cart WHERE userID = ? AND productID = ?");
 
         if (! $stmt) {
@@ -340,6 +337,270 @@ class UserDataService
             echo "Error deleting User from database";
             return false;
             // TODO
+        }
+    }
+    
+    public function addCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV){
+        $connection = $this->conn;
+        
+        $userID = mysqli_real_escape_string($connection, $userID);
+        $ccType = mysqli_real_escape_string($connection, $ccType);
+        $ccNumber = mysqli_real_escape_string($connection, $ccNumber);
+        $expMonth = mysqli_real_escape_string($connection, $expMonth);
+        $expYear = mysqli_real_escape_string($connection, $expYear);
+        $ccCCV = mysqli_real_escape_string($connection, $ccCCV);
+
+        
+        $stmt = "INSERT INTO credit_cards (userID, ccNumber, ccType, ccMonth, ccYear, ccCCV)
+  			  VALUES('$userID', '$ccNumber', '$ccType', '$expMonth', '$expYear', '$ccCCV')";
+        
+        
+        if (mysqli_query($connection, $stmt)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public function editCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV)
+    {
+        $connection = $this->conn;
+        
+        $userID = mysqli_real_escape_string($connection, $userID);
+        $ccType = mysqli_real_escape_string($connection, $ccType);
+        $ccNumber = mysqli_real_escape_string($connection, $ccNumber);
+        $expMonth = mysqli_real_escape_string($connection, $expMonth);
+        $expYear = mysqli_real_escape_string($connection, $expYear);
+        $ccCCV = mysqli_real_escape_string($connection, $ccCCV);
+        
+        $stmt = "UPDATE credit_cards
+                 SET
+                    ccType = '$ccType', ccNumber = '$ccNumber', ccMonth = '$expMonth', ccYear = '$expYear', ccCCV = '$ccCCV'
+                 WHERE
+                    userID = '$userID'";
+        
+        $connection->query($stmt);
+        
+        if ($connection->affected_rows == 1) {
+            return true;
+        }
+        else {
+            return $this->addCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV);
+        }
+    }
+    
+    public function findCCByID($id){
+        $conn = $this->conn;
+        
+        $stmt = $conn->prepare("SELECT * FROM credit_cards WHERE userID = ?");
+        
+        // bind params
+        $stmt->bind_param('i', $id);
+        
+        // execute query
+        $stmt->execute();
+        
+        // get results
+        $result = $stmt->get_result();
+        
+        if (! $result) {
+            echo "Error in the SQL statement";
+            return NULL;
+            exit();
+        }
+        
+        if ($result->num_rows == 0) {
+            return FALSE;
+        } else {
+            $users_array = array();
+            
+            while ($user = $result->fetch_assoc()) {
+                array_push($users_array, $user);
+            }
+            return $users_array;
+        }
+        
+    }
+    
+    public function processPayment(){
+        //fake function that simulates processing payment, hard coded return true
+        return true;
+    }
+    
+    public function markAsSold($productIDs){
+        $conn = $this->conn;
+        
+        $comma_separated = implode(",", $productIDs);
+        
+        $stmt = $conn->prepare("UPDATE products SET sold = 1 WHERE ID IN ($comma_separated)");
+        
+        if (!$stmt){
+            echo "Something is wrong in the binding process. SQL Error?";
+            exit;
+        }
+        
+        if ($stmt->execute()){
+            return true;
+        }
+        else {
+            echo "Error updating products to sold in database";
+            return false;
+            //TODO
+        }
+    }
+    
+    public function createOrder($userID, $addressID){        
+        $conn = $this->conn;
+        
+        $userID = mysqli_real_escape_string($conn, $userID);
+        $addressID = mysqli_real_escape_string($conn, $addressID);
+        
+        $stmt = "INSERT INTO orders (userID, AddressID) VALUES('$userID', '$addressID')";
+        
+        if (mysqli_query($conn, $stmt)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public function getMostRecentOrderID($userID){      
+        $conn = $this->conn;
+        
+        $userID = mysqli_real_escape_string($conn, $userID);
+        
+        $stmt = $conn->prepare("SELECT * FROM orders WHERE userID = ? ORDER BY timestamp DESC LIMIT 1");
+        // bind params
+        $stmt->bind_param('i', $userID);
+        
+        // execute query
+        $stmt->execute();
+        
+        // get results
+        $result = $stmt->get_result();
+        
+        if (! $result) {
+            echo "Error in the SQL statement";
+            return NULL;
+            exit();
+        }
+        
+        if ($result->num_rows == 0) {
+            return NULL;
+        } else {
+            $ordersArray = array();
+            
+            while ($order = $result->fetch_assoc()) {
+                array_push($ordersArray, $order);
+            }
+            
+            $orderId = $ordersArray[0]['ordersID'];
+           
+            return $orderId;
+        }
+        
+        
+    }
+    
+    public function createOrderDetails($orderID, $productIDs){
+        $conn = $this->conn;
+        
+        $values = array();
+        foreach($productIDs as $ID){
+            $values[] = "('{$ID}', '{$orderID}')";
+        }
+        
+        $values = implode(", ", $values);
+        
+        $stmt = "INSERT INTO order_details (productID, orderID) VALUES  {$values}" ;
+        
+        if (mysqli_query($conn, $stmt)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    public function updateCartsRemoveSold(){
+        $conn = $this->conn;
+        
+        $stmt = $conn->prepare("DELETE cart FROM cart LEFT JOIN products on cart.productID = products.ID WHERE products.sold = 1");
+
+        if (! $stmt) {
+            echo "Something is wrong in the binding process. SQL Error?";
+            exit();
+        }
+        
+        $stmt->execute(); 
+        
+        return true;
+    }
+    
+    public function completeSaleTransaction($userID, $addressID, $productIDs){
+        //ATOMIC transaction process       
+        $conn = $this->conn;
+        $conn->autocommit(FALSE);
+        $conn->begin_transaction();
+        
+        //hard coded to return true
+        $paymentSuccess = $this->processPayment();
+        
+        $orderSuccess = $this->createOrder($userID, $addressID);
+        
+        $orderID = $this->getMostRecentOrderID($userID);
+        
+        $orderDetails = $this->createOrderDetails($orderID, $productIDs);
+        
+        $markAsSold = $this->markAsSold($productIDs);
+        
+        $updateCart = $this->updateCartsRemoveSold();      
+        
+        if ($paymentSuccess == true && $orderSuccess == true && $orderDetails == true && $markAsSold ==true && $updateCart == true){
+            $conn->commit();
+            $_SESSION['orderSuccessID'] = $orderID;
+            return true;
+        }
+        else {
+            $conn->rollback();
+            return false;
+        }
+        
+        $conn->autocommit(TRUE);
+    }
+       
+    public function getOrdersHistory($userID){
+        $conn = $this->conn;
+        
+        $stmt = $conn->prepare("SELECT * FROM orders LEFT JOIN order_details on orders.ordersID = order_details.orderID 
+            LEFT JOIN products on order_details.productID = products.ID WHERE userID = ?");
+        
+        // bind params
+        $stmt->bind_param('i', $userID);
+        
+        // execute query
+        $stmt->execute();
+        
+        // get results
+        $result = $stmt->get_result();
+        
+        if (! $result) {
+            echo "Error in the SQL statement";
+            return NULL;
+            exit();
+        }
+        
+        if ($result->num_rows == 0) {
+            return NULL;
+        } else {
+            $ordersHistory_array = array();
+            
+            while ($order = $result->fetch_assoc()) {
+                array_push($ordersHistory_array, $order);
+            }
+            return $ordersHistory_array;
         }
     }
 }

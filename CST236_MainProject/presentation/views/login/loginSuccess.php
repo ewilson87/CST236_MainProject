@@ -31,6 +31,15 @@ require_once 'securePage.php';
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
+	
+	<style>
+hr {
+	border: 0;
+	height: 1px;
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0),
+		rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+</style>
 
 <title>Login Success</title>
 </head>
@@ -57,17 +66,25 @@ require_once 'securePage.php';
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-1"><a
+		<li class="nav-item dropdown ml-2"><a
+				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
+				style="height: 45px" href="#" id="navbarDropdown" role="button"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+					class="far fa-user-circle"></i>
+			</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item"
+						href="../../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>">Account</a>
+					<hr>
+					<a class="dropdown-item" href="displayOrders.php">Orders</a>
+				</div></li>
+			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../../handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Cart"> <i
 					class="fas fa-shopping-cart"></i></a></li>
-			<li class="ml-2 mt-1"><a
-				class="btn-lg btn-secondary border border-warning"
-				href="../../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
-				role="button" data-toggle="tooltip" title="Account"> <i
-					class="far fa-user-circle"></i></a></li>
-			<li class="ml-2 mt-1"><a
+
+			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="login.php?logout='1'" role="button" data-toggle="tooltip"
 				title="Logout"> <i class="fas fa-sign-out-alt"></i></a></li>
@@ -90,7 +107,7 @@ require_once 'securePage.php';
 							<div class="form-group">
 								<label for="username">Search for a user </label> <input
 									type="text" class="form-control border border-warning" name="username" id="username"
-									aria-describedby="searchHelp" placeholder="Enter email"> <small
+									aria-describedby="searchHelp" placeholder="Enter username"> <small
 									id="searchHelp" class="form-text mb-2">Leave blank for all
 									users.</small>
 								<div class="d-flex justify-content-center">

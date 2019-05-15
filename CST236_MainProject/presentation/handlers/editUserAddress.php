@@ -8,10 +8,14 @@ require_once 'handlersSecurePage.php';
 
 $id = $_GET['ID'];
 
-$userService = new UserBusinessService();
+if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
+    $userService = new UserBusinessService();
 
-$user = $userService->findByID($id);
-
+    $user = $userService->findByID($id);
+} else {
+    session_destroy();
+    header("Location: ../views/login/login.php");
+}
 ?>
 
 <!doctype html>
@@ -36,7 +40,7 @@ $user = $userService->findByID($id);
 
 <title>Set Address</title>
 
-	<style>
+<style>
 hr {
 	border: 0;
 	height: 1px;
@@ -54,7 +58,7 @@ hr {
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
-		<a class="navbar-brand" href="../../../index.php"><img
+		<a class="navbar-brand" href="#"><img
 			src="../views/images/wLogo.png" class="img-fluid img-thumbnail mr-2"
 			alt="" width="40" height="40" class="d-inline-block align-top"
 			style="margin-right: 5px"></a>
@@ -66,19 +70,30 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-2"><a
+				class="btn-lg btn-secondary border border-warning"
 				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['userSearchID']; ?>"
 				role="button" data-toggle="tooltip" title="Back"> <i
 					class="fas fa-arrow-circle-left"></i></a></li>
-					<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+					<li class="nav-item dropdown ml-2"><a
+				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
+				style="height: 45px" href="#" id="navbarDropdown" role="button"
+				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
+					class="far fa-user-circle"></i>
+			</a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+					<a class="dropdown-item"
+						href="userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>">Account</a>
+					<hr>
+					<a class="dropdown-item" href="displayOrders.php">Orders</a>
+				</div></li>
+			<li class="ml-2 mt-2"><a
+				class="btn-lg btn-secondary border border-warning"
 				href="../handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Cart"> <i
 					class="fas fa-shopping-cart"></i></a></li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
-				href="../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>"
-				role="button" data-toggle="tooltip" title="Account"> <i
-					class="far fa-user-circle"></i></a></li>
-			<li class="ml-2 mt-1"><a class="btn-lg btn-secondary border border-warning"
+			<li class="ml-2 mt-2"><a
+				class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"
 				data-toggle="tooltip" title="Logout"> <i class="fas fa-sign-out-alt"></i></a>
 			</li>
@@ -215,7 +230,8 @@ hr {
 								</div>
 								<input type="text" class="form-control" name="postalCode"
 									value="<?php echo $user[0]['postalCode'] ?>"
-									aria-label="postalCode" aria-describedby="postalCode-addon" required>
+									aria-label="postalCode" aria-describedby="postalCode-addon"
+									required>
 							</div>
 							<hr>
 
@@ -239,8 +255,8 @@ hr {
 
 						</div>
 						<div class="card-footer bg-dark text-light border-warning">
-							<button class="btn btn-secondary border border-warning" data-toggle="confirmation"
-								name="addressEditSave" type="submit">Submit</button>
+							<button class="btn btn-secondary border border-warning"
+								data-toggle="confirmation" name="addressEditSave" type="submit">Submit</button>
 						</div>
 
 					</form>

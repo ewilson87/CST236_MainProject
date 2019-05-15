@@ -21,7 +21,7 @@ class ProductDataService
         $db = new \Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("select ID, carMake, carModel, carYear, carVin, carDescription, 
-            carPrice FROM products WHERE carMake LIKE ? OR carModel LIKE ?");
+            carPrice FROM products WHERE (sold = 0) AND (carMake LIKE ? OR carModel LIKE ?)");
         
         if (!$stmt){
             echo "Something is wrong in the binding process. SQL Error?";

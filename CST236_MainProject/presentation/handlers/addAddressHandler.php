@@ -21,4 +21,5 @@ $dbservice->addAddress($address);
 
 $_SESSION['addressID'] = $_SESSION['ID'];
 
-header("Location: ../views/login/loginSuccess.php");
+//direct to enter CC
+header("Location: ../views/login/addCC.php");

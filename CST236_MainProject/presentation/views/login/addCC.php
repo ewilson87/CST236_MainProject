@@ -32,7 +32,7 @@ require_once 'securePage.php';
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
 
-<title>Set Address</title>
+<title>Add credit card</title>
 
 <style>
 hr {
@@ -43,7 +43,7 @@ hr {
 }
 
 .input-group-text {
-	width: 130px;
+	width: 160px;
 }
 </style>
 
@@ -58,13 +58,7 @@ hr {
 			class="img-fluid img-thumbnail" alt="" width="40" height="40"
 			class="d-inline-block align-top" style="margin-right: 5px"></a>
 		<h3 class="text-white mt-1">
-			Registration Succeeded. Welcome <em><?php echo $_SESSION['fname'] . "</em>! Please enter your address."?>	
-		
-		
-		
-		
-		
-		
+			Registration Succeeded. Welcome <em><?php echo $_SESSION['fname'] . "</em>! Please enter your credit card."?>	
 		</h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -73,7 +67,7 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
-					<li class="nav-item dropdown ml-2"><a
+<li class="nav-item dropdown ml-2"><a
 				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
 				style="height: 45px" href="#" id="navbarDropdown" role="button"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
@@ -96,139 +90,86 @@ hr {
 			<div class="col-sm-12">
 				<div class="card bg-info border border-warning mb-3">
 					<div class="card-header bg-dark text-light border-warning">
-						<h1>Set Address</h1>
+						<h1>Add Credit Card</h1>
+						<h3>You will no be charged until purchase.</h3>
 					</div>
-					<form method="post" action="../../handlers/addAddressHandler.php">
+					<form method="post" action="../../handlers/addCCHandler.php">
 						<div class="card-body text-left bg-info">
 							<div class="input-group my-3">
 								<div class="input-group-prepend">
-									<label class="input-group-text" for="addressType">Address Type</label>
+									<label class="input-group-text" for="ccType">Credit Card Type</label>
 								</div>
-								<select class="custom-select" name="addressType"
-									id="addressType">
-									<option value="1">Home</option>
-									<option value="2">Business</option>
+								<select class="custom-select" name="ccType"
+									id="ccType">
+									<option value="Visa">Visa</option>
+									<option value="Mastercard">Mastercard</option>
+									<option value="American Express">American Express</option>
+									<option value="Bankcard">Bankcard</option>
 								</select>
 							</div>
 							<hr>
-
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text text-center" id="street1-addon">Address
-										Line 1</span>
+									<span class="input-group-text text-center" id="ccNumber-addon">Credit Card Number</span>
 								</div>
-								<input type="text" class="form-control" name="street1"
-									aria-label="street1" aria-describedby="street1-addon" required>
+								<input type="text" pattern=".{15,16}" class="form-control" name="ccNumber"
+									aria-label="ccNumber" aria-describedby="ccNumber-addon" required>
 							</div>
 							<hr>
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text text-center" id="street2-addon">Address
-										Line 2</span>
+									<span class="input-group-text text-center" id="expMonthSelect-addon">Expiration Month</span>
 								</div>
-								<input type="text" class="form-control" placeholder="OPTIONAL"
-									name="street2" aria-label="street2"
-									aria-describedby="street-addon">
-							</div>
-							<hr>
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<span class="input-group-text text-center" id="city-addon">City</span>
-								</div>
-								<input type="text" class="form-control" name="city"
-									aria-label="city" aria-describedby="city-addon" required>
-							</div>
-							<hr>
-							<div class="input-group mb-3">
-								<div class="input-group-prepend">
-									<span class="input-group-text text-center" id="state-addon">State</span>
-								</div>
-								<select class="custom-select" name="stateSelect"
-									id="stateSelect">
-									<option value="AK">Alaska</option>
-									<option value="AL">Alabama</option>
-									<option value="AR">Arkansas</option>
-									<option value="AZ">Arizona</option>
-									<option value="CA">California</option>
-									<option value="CO">Colorado</option>
-									<option value="CT">Connecticut</option>
-									<option value="DC">District of Columbia</option>
-									<option value="DE">Delaware</option>
-									<option value="FL">Florida</option>
-									<option value="GA">Georgia</option>
-									<option value="HI">Hawaii</option>
-									<option value="IA">Iowa</option>
-									<option value="ID">Idaho</option>
-									<option value="IL">Illinois</option>
-									<option value="IN">Indiana</option>
-									<option value="KS">Kansas</option>
-									<option value="KY">Kentucky</option>
-									<option value="LA">Louisiana</option>
-									<option value="MA">Massachusetts</option>
-									<option value="MD">Maryland</option>
-									<option value="ME">Maine</option>
-									<option value="MI">Michigan</option>
-									<option value="MN">Minnesota</option>
-									<option value="MO">Missouri</option>
-									<option value="MS">Mississippi</option>
-									<option value="MT">Montana</option>
-									<option value="NC">North Carolina</option>
-									<option value="ND">North Dakota</option>
-									<option value="NE">Nebraska</option>
-									<option value="NH">New Hampshire</option>
-									<option value="NJ">New Jersey</option>
-									<option value="NM">New Mexico</option>
-									<option value="NV">Nevada</option>
-									<option value="NY">New York</option>
-									<option value="OH">Ohio</option>
-									<option value="OK">Oklahoma</option>
-									<option value="OR">Oregon</option>
-									<option value="PA">Pennsylvania</option>
-									<option value="PR">Puerto Rico</option>
-									<option value="RI">Rhode Island</option>
-									<option value="SC">South Carolina</option>
-									<option value="SD">South Dakota</option>
-									<option value="TN">Tennessee</option>
-									<option value="TX">Texas</option>
-									<option value="UT">Utah</option>
-									<option value="VA">Virginia</option>
-									<option value="VT">Vermont</option>
-									<option value="WA">Washington</option>
-									<option value="WI">Wisconsin</option>
-									<option value="WV">West Virginia</option>
-									<option value="WY">Wyoming</option>
+								<select class="custom-select" name="expMonthSelect"
+									id="expMonthSelect">
+									<option value="01">01</option>
+									<option value="02">02</option>
+									<option value="03">03</option>
+									<option value="04">04</option>
+									<option value="05">05</option>
+									<option value="06">06</option>
+									<option value="07">07</option>
+									<option value="08">08</option>
+									<option value="09">09</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
 								</select>
 							</div>
 							<hr>
-
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<span class="input-group-text text-center"
-										id="postalCode-addon">Postal Code</span>
+									<span class="input-group-text text-center" id="expYearSelect-addon">Expiration Year</span>
 								</div>
-								<input type="text" class="form-control" name="postalCode"
-									aria-label="postalCode" aria-describedby="postalCode-addon" required>
+								<select class="custom-select" name="expYearSelect"
+									id="expYearSelect">
+									<option value="01">2019</option>
+									<option value="02">2020</option>
+									<option value="03">2021</option>
+									<option value="04">2022</option>
+									<option value="05">2023</option>
+									<option value="06">2024</option>
+									<option value="07">2025</option>
+									<option value="08">2026</option>
+									<option value="09">2027</option>
+									<option value="10">2028</option>
+									<option value="11">2029</option>
+									<option value="12">2030</option>
+								</select>
 							</div>
 							<hr>
-
-
 							<div class="input-group mb-3">
 								<div class="input-group-prepend">
-									<div class="input-group-text">
-										<input type="checkbox" name="isDefaultCheck"
-											aria-label="Default Check Box" checked>
-									</div>
+									<span class="input-group-text text-center" id="ccCCV-addon">Credit Card CCV</span>
 								</div>
-								<input type="text" name="isDefault" class="form-control"
-									value="SELECT TO MAKE ADDRESS DEFAULT"
-									aria-label="Default Check Box" DISABLED>
+								<input type="text" pattern=".{3,4}" class="form-control" name="ccCCV"
+									aria-label="ccCCV" aria-describedby="ccCCV-addon" required>
 							</div>
-
 						</div>
 						<div class="card-footer bg-dark text-light border-warning">
 								<div class="d-flex justify-content-center">
 									<button class="btn btn-secondary border border-warning" data-toggle="confirmation"
-										name="userEditSave" type="submit">Submit</button>
+										name="ccSave" type="submit">Submit</button>
 								</div>
 							</div>
 					</form>

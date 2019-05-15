@@ -6,23 +6,12 @@ require_once '../../header.php';
 require_once '../../Autoloader.php';
 require_once 'handlersSecurePage.php';
 
-if (isset($_GET['ID'])) {
-    $id = $_GET['ID'];
-} else if (isset($_POST['ID'])) {
-    $id = $_POST['ID'];
-}
+$dbservice = new UserBusinessService();
 
-if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
-
-    $_SESSION['userSearchID'] = $id;
-
-    $userService = new UserBusinessService();
-
-    $user = $userService->findByID($id);
-} else {
-    session_destroy();
-    header("Location: ../views/login/login.php");
-}
+$cart = $dbservice->getCartByUserID($_SESSION['ID']);
+$checkoutUser = $dbservice->findByID($_SESSION['ID']);
+$checkoutCC = $dbservice->findCCByID($_SESSION['ID']);
+$_SESSION['checkoutCart'] = true;
 ?>
 
 <!doctype html>
@@ -39,23 +28,36 @@ if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
 
+<!--  Datatables CSS -->
+<link rel="stylesheet" type="text/css"
+	href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css">
+
 <!--  Font Awesome CSS -->
 <link rel="stylesheet"
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
+	
+	<style>
+hr {
+	border: 0;
+	height: 1px;
+	background-image: linear-gradient(to right, rgba(0, 0, 0, 0),
+		rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
+</style>
 
-<title>User Select</title>
+<title>Checkout</title>
 </head>
 
-<body class="">
+<body>
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
 		<a class="navbar-brand" href="#"><img src="../views/images/wLogo.png"
 			class="img-fluid img-thumbnail mr-2" alt="" width="40" height="40"
 			class="d-inline-block align-top" style="margin-right: 5px"></a>
-		<h3 class="text-white mt-1">User Select: <?php echo $user[0]['username'] ?></h3>
+		<h3 class="text-white mt-1">Confirm Purchase</h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarSupportedContent">
@@ -65,11 +67,10 @@ if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
 		<ul class="nav navbar-nav ml-auto">
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
-				href="../views/login/loginSuccess.php" role="button"
-				data-toggle="tooltip" title="Back"> <i
+				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
+				role="button" data-toggle="tooltip" title="Back"> <i
 					class="fas fa-arrow-circle-left"></i></a></li>
-
-			<li class="nav-item dropdown ml-2"><a
+					<li class="nav-item dropdown ml-2"><a
 				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
 				style="height: 45px" href="#" id="navbarDropdown" role="button"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
@@ -81,13 +82,11 @@ if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
 					<hr>
 					<a class="dropdown-item" href="displayOrders.php">Orders</a>
 				</div></li>
-
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Cart"> <i
 					class="fas fa-shopping-cart"></i></a></li>
-
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"
@@ -96,50 +95,55 @@ if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
 		</ul>
 	</nav>
 
-<?php
-
-if (isset($_SESSION['cantRemoveAdmin'])) :
-
+	<div class="container">
+		<div class="jumbotron bg-secondary text-light border border-warning">
+			<h1 class="display-5">Confirm Transaction Details</h1>
+			<hr>
+			<p class="lead text-left">
+				Transaction total: <?php echo "$" . $_SESSION['total']; ?>
+			</p>
+			<hr>
+			<p class="lead text-left">
+				Billed to <?php echo $checkoutCC[0]['ccType']; ?> ending in
+				: <?php echo substr($checkoutCC[0]['ccNumber'], -4); ?>
+			</p>
+			<hr>
+			<p class="lead text-left">
+				Shipped to: <br>
+				<?php
+    echo $checkoutUser[0]['street1'] . '<br>';
+    if (strlen($checkoutUser['0']['street2']) > 0) {
+        echo $checkoutUser['0']['street2'] . '<br>';
+    }
+    echo $checkoutUser[0]['city'] . ', ' . $checkoutUser[0]['state'] . ', ' . $checkoutUser[0]['postalCode'];
     ?>
-
-<div class="container text-center mb-4">
-		<div class="row mb-4 justify-content-center">
-			<div class="col-sm-12 col-md-6">
-				<div class="card mb-4">
-					<div class="card-body text-center text-light bg-danger">
-						<h3 class="card-title">Primary admin account (ID #2) cannot remove
-							admin role or be deleted!</h3>
-					</div>
-				</div>
-			</div>
+			</p>
 		</div>
 	</div>
 
 
 <?php
-    unset($_SESSION['cantRemoveAdmin']);
-endif;
+if ($cart) {
+    include ('_displayCart.php');
+    ?>
 
-if (isset($_SESSION['editUser']) && $_SESSION['editUser'] == true) {
-    unset($_SESSION['editUser']);
-    include ('_displayEditUser.php');
-} else if ($user) {
-
-    if (isset($_SESSION['editUserSave']) || isset($_SESSION['editAddressSave'])) {
-        if ((isset($_SESSION['editUserSave']) && $_SESSION['editUserSave'] == true) || isset($_SESSION['editAddressSave'])) {
-            unset($_SESSION['editUserSave']);
-            unset($_SESSION['editAddressSave']);
-            include ('_editProductSuccess.php');
-        } else {
-            unset($_SESSION['editUserSave']);
-            include ('_editFail.php');
-        }
-    }
-    include ('_displaySelectUser.php');
-} else {
-    echo "No users found with that ID";
+    <div class="container text-center">
+		<div class="row mb-4 justify-content-center">
+			<div class="col">
+				<form method="post" action="../../presentation/handlers/checkoutHandler.php">
+				<div class="d-flex justify-content-center">
+							<button type="submit" class="btn-lg btn-secondary border border-warning" name="payConfirmed"
+							data-toggle="confirmation" title="Confirm" >Submit Payment</button>
+							</div>
+				</form>
+			</div>
+		</div>
+	</div>
+    <?php
 }
+
 ?>
+
 
 
 		
@@ -164,14 +168,6 @@ if (isset($_SESSION['editUser']) && $_SESSION['editUser'] == true) {
 	<script
 		src="//cdn.jsdelivr.net/npm/bootstrap-confirmation2/dist/bootstrap-confirmation.min.js"></script>
 
-
-	<!-- Datatables script -->
-	<script>
-$(document).ready( function () {
-    $('#mydatatable').DataTable();
-} );
-</script>
-
 	<!-- Confirmation script -->
 	<script>
 $('[data-toggle=confirmation]').confirmation({
@@ -187,5 +183,10 @@ $(document).ready(function(){
 });
 </script>
 
+
 </body>
 </html>
+
+<?php
+$_SESSION['checkoutCart'] = false;
+?>

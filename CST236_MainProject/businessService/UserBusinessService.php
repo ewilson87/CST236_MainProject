@@ -94,5 +94,35 @@ class UserBusinessService
         
         return $dbservice->removeFromCart($userID, $productID);
     }
+    
+    public function addCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->addCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV);
+    }
+    
+    public function editCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->editCC($userID, $ccType, $ccNumber, $expMonth, $expYear, $ccCCV);
+    }
+    
+    public function findCCByID($id){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->findCCByID($id);
+    }
+        
+    public function completeSaleTransaction($userID, $addressID, $productIDs){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->completeSaleTransaction($userID, $addressID, $productIDs);
+    }
+    
+    public function getOrdersHistory($userID){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->getOrdersHistory($userID);
+    }
 }
 

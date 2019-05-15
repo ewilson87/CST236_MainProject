@@ -199,8 +199,13 @@ hr {
 								name="userEditGroupSelect">
 								<option value="1">Edit Account</option>
 								<option value="3">Edit Address</option>
+								<?php if ($user[0]['ID'] == $_SESSION['ID']):?>
+								<option value="4">Edit Credit Card</option>
+								<?php endif; ?>
+								<?php if ($user[0]['ID'] != 2): ?>
 								<option class="bg-danger" value="2">Delete Account(WARNING -
 									CAN'T BE UNDONE!)</option>
+								<?php endif; ?>
 							</select>
 							<div class="input-group-append">
 								<button class="btn btn-dark border border-warning" data-toggle="confirmation"

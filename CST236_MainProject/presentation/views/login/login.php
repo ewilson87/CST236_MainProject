@@ -57,7 +57,7 @@ hr {
 
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
 					<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
-			<a class="navbar-brand" href="../../../index.php" ><img src="../images/wLogo.png" class="img-fluid img-thumbnail" alt="" width="40"
+			<a class="navbar-brand" href="#" ><img src="../images/wLogo.png" class="img-fluid img-thumbnail" alt="" width="40"
 			 height="40" class="d-inline-block align-top" style="margin-right: 5px"></a>
 			<h3 class="text-white">Wilson's Auto</h3>
 

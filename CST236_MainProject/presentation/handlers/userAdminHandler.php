@@ -38,6 +38,9 @@ if (isset($_POST['userEditGroupSelect'])) {
     else if ($userEditGroupSelect == 3){
         header('Location: editUserAddress.php?ID=' . $_POST['ID']);
     }
+    else if ($userEditGroupSelect == 4){
+        header('Location: editUserCC.php'); //Implementation of CC edit prevents admin being able to edit users CC
+    }
 }
 
 if (isset($_POST['userEditSave'])) {
