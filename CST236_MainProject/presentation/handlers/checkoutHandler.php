@@ -38,7 +38,7 @@ if (isset($_POST['payConfirmed'])){
         array_push($productIDs, $cart[$x]['ID']);
     } 
     $_SESSION['test'] = implode(",", $productIDs);
-    if ($dbservice->completeSaleTransaction($_SESSION['ID'], $_SESSION['addressID'], $productIDs)){
+    if ($dbservice->completeSaleTransaction($_SESSION['ID'], $_SESSION['addressID'], $productIDs, $_SESSION['total'], $_SESSION['totalCount'])){
         $_SESSION['purchaseSuccess'] = true;
         header("Location: displayOrders.php");
     }

@@ -113,16 +113,22 @@ class UserBusinessService
         return $dbservice->findCCByID($id);
     }
         
-    public function completeSaleTransaction($userID, $addressID, $productIDs){
+    public function completeSaleTransaction($userID, $addressID, $productIDs, $total, $count, $discount){
         $dbservice = new UserDataService();
         
-        return $dbservice->completeSaleTransaction($userID, $addressID, $productIDs);
+        return $dbservice->completeSaleTransaction($userID, $addressID, $productIDs, $total, $count, $discount);
     }
     
     public function getOrdersHistory($userID){
         $dbservice = new UserDataService();
         
         return $dbservice->getOrdersHistory($userID);
+    }
+    
+    public function getSalesReport($start, $end){
+        $dbservice = new UserDataService();
+        
+        return $dbservice->getSalesReport($start, $end);
     }
 }
 

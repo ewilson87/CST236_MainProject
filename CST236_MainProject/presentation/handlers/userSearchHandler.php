@@ -73,6 +73,12 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
+		<?php if ($_SESSION['accessLevel'] == 9): ?>
+		<li class="ml-2 mt-2"><a
+				class="btn-lg btn-secondary border border-warning"
+				href="reportHandler.php"
+				role="button" data-toggle="tooltip" title="Reports"><i class="fas fa-tasks"></i></a></li>
+		<?php endif; ?>
 			<li class="ml-2 mt-2"><a class="btn-lg btn-secondary border border-warning"
 				href="../views/login/loginSuccess.php"
 				role="button" data-toggle="tooltip" title="Back"> <i class="fas fa-arrow-circle-left"></i></a>

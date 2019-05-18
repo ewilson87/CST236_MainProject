@@ -9,7 +9,7 @@ $_SESSION['uds'] = true;
 
 require_once '../../Autoloader.php';
 
-class UserDataService
+class UserDataService implements JsonSerializable
 {
     private $conn;
     
@@ -17,6 +17,10 @@ class UserDataService
     {
         $db = new Database();
         $this->conn = $db->getConnection();
+    }
+    
+    public function jsonSerialize(){
+        return get_object_vars($this);
     }
 
     public function findByFirstName($pattern)
@@ -450,13 +454,14 @@ class UserDataService
         }
     }
     
-    public function createOrder($userID, $addressID){        
+    public function createOrder($userID, $addressID, $total, $count, $discount){        
         $conn = $this->conn;
         
         $userID = mysqli_real_escape_string($conn, $userID);
         $addressID = mysqli_real_escape_string($conn, $addressID);
         
-        $stmt = "INSERT INTO orders (userID, AddressID) VALUES('$userID', '$addressID')";
+        $stmt = "INSERT INTO orders (userID, AddressID, totalProducts, totalPrice, discountUsed) 
+                 VALUES('$userID', '$addressID', '$count', '$total', '$discount')";
         
         if (mysqli_query($conn, $stmt)) {
             return true;
@@ -539,7 +544,7 @@ class UserDataService
         return true;
     }
     
-    public function completeSaleTransaction($userID, $addressID, $productIDs){
+    public function completeSaleTransaction($userID, $addressID, $productIDs, $total, $count){
         //ATOMIC transaction process       
         $conn = $this->conn;
         $conn->autocommit(FALSE);
@@ -548,7 +553,7 @@ class UserDataService
         //hard coded to return true
         $paymentSuccess = $this->processPayment();
         
-        $orderSuccess = $this->createOrder($userID, $addressID);
+        $orderSuccess = $this->createOrder($userID, $addressID, $total, $count);
         
         $orderID = $this->getMostRecentOrderID($userID);
         
@@ -601,6 +606,66 @@ class UserDataService
                 array_push($ordersHistory_array, $order);
             }
             return $ordersHistory_array;
+        }
+    }
+    
+    public function getSalesReport($start, $end){
+        $conn = $this->conn;
+        
+        $stmt = $conn->prepare("SELECT * FROM orders
+            WHERE timestamp BETWEEN '$start' and '$end 23:59:59' ORDER BY `totalProducts` DESC");
+        
+        // execute query
+        $stmt->execute();
+        
+        // get results
+        $result = $stmt->get_result();
+        
+        if (! $result) {
+            echo "Error in the SQL statement";
+            return NULL;
+            exit();
+        }
+        
+        if ($result->num_rows == 0) {
+            return NULL;
+        } else {
+            $ordersHistory_array = array();
+            
+            while ($order = $result->fetch_assoc()) {
+                array_push($ordersHistory_array, $order);
+            }
+            return $ordersHistory_array;
+        }
+    }
+    
+    public function getSalesReportJSON($start, $end){
+        $conn = $this->conn;
+        
+        $stmt = $conn->prepare("SELECT * FROM orders
+            WHERE timestamp BETWEEN '$start' and '$end 23:59:59' ORDER BY `totalProducts` DESC");
+        
+        // execute query
+        $stmt->execute();
+        
+        // get results
+        $result = $stmt->get_result();
+        
+        if (! $result) {
+            echo "Error in the SQL statement";
+            return NULL;
+            exit();
+        }
+        
+        if ($result->num_rows == 0) {
+            return NULL;
+        } else {
+            $ordersHistory_array = array();
+            
+            while ($order = $result->fetch_assoc()) {
+                array_push($ordersHistory_array, $order);
+            }
+            return json_encode($ordersHistory_array, JSON_PRETTY_PRINT);
         }
     }
 }

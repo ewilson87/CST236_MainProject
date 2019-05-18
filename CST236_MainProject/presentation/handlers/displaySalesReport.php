@@ -6,12 +6,18 @@ require_once '../../header.php';
 require_once '../../Autoloader.php';
 require_once 'handlersSecurePage.php';
 
+// locks page to admin only
+if ($_SESSION['accessLevel'] != 9) {
+    session_destroy();
+    header("Location: ../views/login/login.php");
+}
+
+$start = $_GET['startDate'];
+$end = $_GET['endDate'];
+
 $dbservice = new UserBusinessService();
 
-$cart = $dbservice->getCartByUserID($_SESSION['ID']);
-$checkoutUser = $dbservice->findByID($_SESSION['ID']);
-$checkoutCC = $dbservice->findCCByID($_SESSION['ID']);
-$_SESSION['checkoutCart'] = true;
+$salesReport = $dbservice->getSalesReport($start, $end);
 ?>
 
 <!doctype html>
@@ -37,8 +43,8 @@ $_SESSION['checkoutCart'] = true;
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
-	
-	<style>
+
+<style>
 hr {
 	border: 0;
 	height: 1px;
@@ -47,17 +53,17 @@ hr {
 }
 </style>
 
-<title>Checkout</title>
+<title>Sales Report</title>
 </head>
 
-<body>
+<body class="">
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
 		<a class="navbar-brand" href="#"><img src="../views/images/wLogo.png"
 			class="img-fluid img-thumbnail mr-2" alt="" width="40" height="40"
 			class="d-inline-block align-top" style="margin-right: 5px"></a>
-		<h3 class="text-white mt-1">Confirm Purchase</h3>
+		<h3 class="text-white mt-1">Sales Report</h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
 			data-target="#navbarSupportedContent">
@@ -65,18 +71,20 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
+		
 		<?php if ($_SESSION['accessLevel'] == 9): ?>
 		<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
-				href="reportHandler.php"
-				role="button" data-toggle="tooltip" title="Reports"><i class="fas fa-tasks"></i></a></li>
+				href="reportHandler.php" role="button" data-toggle="tooltip"
+				title="Reports"><i class="fas fa-tasks"></i></a></li>
 		<?php endif; ?>
+		
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
-				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
-				role="button" data-toggle="tooltip" title="Back"> <i
-					class="fas fa-arrow-circle-left"></i></a></li>
-					<li class="nav-item dropdown ml-2"><a
+				href="reportHandler.php" role="button" data-toggle="tooltip"
+				title="Back"> <i class="fas fa-arrow-circle-left"></i></a></li>
+
+			<li class="nav-item dropdown ml-2"><a
 				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
 				style="height: 45px" href="#" id="navbarDropdown" role="button"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
@@ -88,11 +96,13 @@ hr {
 					<hr>
 					<a class="dropdown-item" href="displayOrders.php">Orders</a>
 				</div></li>
+
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Cart"> <i
 					class="fas fa-shopping-cart"></i></a></li>
+
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../views/login/login.php?logout='1'" role="button"
@@ -101,59 +111,83 @@ hr {
 		</ul>
 	</nav>
 
-	<div class="container">
-		<div class="jumbotron bg-secondary text-light border border-warning">
-			<h1 class="display-5">Confirm Transaction Details</h1>
-			<hr>
-			<p class="lead text-left">
-				Transaction total: <?php echo "$" . $_SESSION['total']; ?>
-			</p>
-			<hr>
-			<p class="lead text-left">
-				Billed to <?php echo $checkoutCC[0]['ccType']; ?> ending in
-				: <?php echo substr($checkoutCC[0]['ccNumber'], -4); ?>
-			</p>
-			<hr>
-			<p class="lead text-left">
-				Shipped to: <br>
-				<?php
-    echo $checkoutUser[0]['street1'] . '<br>';
-    if (strlen($checkoutUser['0']['street2']) > 0) {
-        echo $checkoutUser['0']['street2'] . '<br>';
-    }
-    echo $checkoutUser[0]['city'] . ', ' . $checkoutUser[0]['state'] . ', ' . $checkoutUser[0]['postalCode'];
-    ?>
-			</p>
-		</div>
-	</div>
-
+	<div class="container mb-4">
+		<table id="mydatatable"
+			class="table table-striped table-bordered table-hover table-responsive border border-warning">
+			<col width="12%">
+			<col width="28%">
+			<col width="12%">
+			<col width="12%">
+			<col width="15%">
+			<col width="12%">
+			<col width="18%">
+			<thead class="thead-dark">
+				<tr class="text-center">
+					<th class="th-sm">Order ID</th>
+					<th class="th-sm">Date/Time</th>
+					<th class="th-sm">User ID</th>
+					<th class="th-sm">Address ID</th>
+					<th class="th-sm">Total Products</th>
+					<th class="th-sm">Total Price</th>
+					<th class="th-sm">Discount %</th>
+				</tr>
+			</thead>
+			<tbody>
 
 <?php
-if ($cart) {
-    include ('_displayCart.php');
+
+// Have to cast $products as an array to run the count function
+$total = 0;
+$totalProducts = 0;
+for ($x = 0; $x < count((array) $salesReport); $x ++) {
+    $total = $total + $salesReport[$x]['totalPrice'];
+    $totalProducts = $totalProducts + $salesReport[$x]['totalProducts'];
     ?>
-
-    <div class="container text-center">
-		<div class="row mb-4 justify-content-center">
-			<div class="col">
-				<form method="post" action="../../presentation/handlers/checkoutHandler.php">
-				<div class="d-flex justify-content-center">
-							<button type="submit" class="btn-lg btn-secondary border border-warning" name="payConfirmed"
-							data-toggle="confirmation" title="Confirm" >Submit Payment</button>
-							</div>
-				</form>
-			</div>
-		</div>
-	</div>
-    <?php
+<tr>
+					<td class="text-center">
+		<?php echo $salesReport[$x]['ordersID']; ?>
+	</td>
+					<td>
+		<?php echo $salesReport[$x]['timestamp']; ?>
+	</td>
+					<td class="text-center">
+		<?php echo $salesReport[$x]['userID']; ?>
+	</td>
+          
+<?php
+    echo "<td class='text-center'>" . $salesReport[$x]['AddressID'] . "</td><td class='text-center'>" . 
+            $salesReport[$x]['totalProducts'] . "</td><td>$" . $salesReport[$x]['totalPrice'] . "</td>";
+    echo "<td class='text-center'>" . $salesReport[$x]['discountUsed'] . "</td>";
+    echo "</tr>";
 }
-
 ?>
+			
+			
+			
+			
+			
+			
+			
+			</tbody>
+			<tfoot class="thead-dark">
+				<tr>
+					<th class="th-sm"></th>
+					<th class="th-sm"></th>
+					<th class="th-sm"></th>
+					<th class="th-sm"></th>
+					<th class="th-sm text-center"><?php echo $totalProducts; ?></th>
+					<th class="th-sm">$<?php echo $total; ?></th>
+					<th class="th-sm"></th>
+
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 
 
 
-		
-			<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 		crossorigin="anonymous" type="text/javascript"></script>
@@ -174,6 +208,19 @@ if ($cart) {
 	<script
 		src="//cdn.jsdelivr.net/npm/bootstrap-confirmation2/dist/bootstrap-confirmation.min.js"></script>
 
+
+	<!-- Datatables script -->
+	<script>
+$(document).ready( function () {
+    var table = $('#mydatatable').DataTable();
+
+    table
+    .column( '4:visible' )
+    .order( 'desc' )
+    .draw();
+} );
+</script>
+
 	<!-- Confirmation script -->
 	<script>
 $('[data-toggle=confirmation]').confirmation({
@@ -189,10 +236,5 @@ $(document).ready(function(){
 });
 </script>
 
-
 </body>
 </html>
-
-<?php
-$_SESSION['checkoutCart'] = false;
-?>

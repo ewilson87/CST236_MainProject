@@ -37,7 +37,7 @@ if (isset($add)) {
     }
 }
 
-    ?>
+?>
 
 <!doctype html>
 <html lang="en">
@@ -62,8 +62,8 @@ if (isset($add)) {
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
-	
-	<style>
+
+<style>
 hr {
 	border: 0;
 	height: 1px;
@@ -79,10 +79,9 @@ hr {
 
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 		<!-- Image taken from  https://upload.wikimedia.org/wikipedia/en/9/92/UKTV_channel_W_logo.png -->
-		<a class="navbar-brand" href="#"><img
-			src="../views/images/wLogo.png" class="img-fluid img-thumbnail mr-2"
-			alt="" width="40" height="40" class="d-inline-block align-top"
-			style="margin-right: 5px"></a>
+		<a class="navbar-brand" href="#"><img src="../views/images/wLogo.png"
+			class="img-fluid img-thumbnail mr-2" alt="" width="40" height="40"
+			class="d-inline-block align-top" style="margin-right: 5px"></a>
 		<h3 class="text-white mt-1">Cart</h3>
 
 		<button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -91,12 +90,18 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
+		<?php if ($_SESSION['accessLevel'] == 9): ?>
+		<li class="ml-2 mt-2"><a
+				class="btn-lg btn-secondary border border-warning"
+				href="reportHandler.php" role="button" data-toggle="tooltip"
+				title="Reports"><i class="fas fa-tasks"></i></a></li>
+		<?php endif; ?>
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../handlers/ProductSearchHandler.php?pattern=" role="button"
 				data-toggle="tooltip" title="Back"> <i
 					class="fas fa-arrow-circle-left"></i></a></li>
-					<li class="nav-item dropdown ml-2"><a
+			<li class="nav-item dropdown ml-2"><a
 				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
 				style="height: 45px" href="#" id="navbarDropdown" role="button"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
@@ -118,34 +123,63 @@ hr {
 
 
 <?php
-    if (isset($_SESSION['removeSuccess']) && $_SESSION['removeSuccess'] == true) {
-        unset($_SESSION['removeSuccess']);
-        include('_deleteSuccess.php');
-    }
-    
-    if ($cart){
-        if (isset($_SESSION['editFailReason'])){
-            include ('_editFail.php'); //
-            unset($_SESSION['editFailReason']);
-        }
-        include('_displayCart.php');
-    ?>
-    <div class="container text-center">
-		<div class="row mb-4 justify-content-center">
-		<div class="col">
-            <a class="btn-lg btn-secondary border border-warning mx-auto"
-    				href="../../presentation/handlers/checkoutHandler.php?cart=true"
-    				role="button" data-toggle="tooltip" title="checkout">Checkout</a>
-		</div>
-	</div></div>
-    <?php 
-    }
-    else {
-        $_SESSION['editFailReason'] = "Nothing in your cart";
+if (isset($_SESSION['removeSuccess']) && $_SESSION['removeSuccess'] == true) {
+    unset($_SESSION['removeSuccess']);
+    include ('_deleteSuccess.php');
+}
+
+if ($cart) {
+    if (isset($_SESSION['editFailReason'])) {
         include ('_editFail.php'); //
         unset($_SESSION['editFailReason']);
     }
+    include ('_displayCart.php');
+    ?>
+    
+    
+    
+    
+    <!-- For Discount coding area -->
+    <form action="../../presentation/handlers/checkoutHandler.php" method="get">
+    <!-- TODO ADD INVISIBLE CART=TRUE -->
+	<div class="row justify-content-center text-center">
+		<div class="col-3 m-3">
+			<div class="card mb-4 bg-dark text-light border border-warning">
+				<div class="card-body text-left">
+					<h4 class="card-title text-center">Have a coupon code?<small> Enter it now!</small></h4>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text text-center" style="width: 120px"
+								id="discountCode-addon">Discount Code</span>
+						</div>
+						<input type="text" class="form-control" name="discountCode"
+							aria-label="discountCode" aria-describedby="discountCode-addon">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
+	<div class="container text-center">
+		<div class="row mb-4 justify-content-center">
+			<div class="col">
+				<a class="btn-lg btn-secondary border border-warning mx-auto"
+					href="../../presentation/handlers/checkoutHandler.php?cart=true"
+					role="button" data-toggle="tooltip" title="checkout">Checkout</a>
+			</div>
+		</div>
+	</div>
+	</form>
+	
+	
+	
+	
+    <?php
+} else {
+    $_SESSION['editFailReason'] = "Nothing in your cart";
+    include ('_editFail.php'); //
+    unset($_SESSION['editFailReason']);
+}
 
 ?>
 
@@ -182,7 +216,6 @@ $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();   
 });
 </script>
-
 
 </body>
 </html>

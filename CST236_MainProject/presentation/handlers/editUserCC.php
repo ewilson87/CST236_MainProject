@@ -66,6 +66,12 @@ hr {
 		</button>
 
 		<ul class="nav navbar-nav ml-auto">
+		<?php if ($_SESSION['accessLevel'] == 9): ?>
+		<li class="ml-2 mt-2"><a
+				class="btn-lg btn-secondary border border-warning"
+				href="reportHandler.php"
+				role="button" data-toggle="tooltip" title="Reports"><i class="fas fa-tasks"></i></a></li>
+		<?php endif; ?>
 			<li class="nav-item dropdown ml-2"><a
 				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
 				style="height: 45px" href="#" id="navbarDropdown" role="button"

@@ -28,8 +28,10 @@
 
 // Have to cast $products as an array to run the count function
 $total = 0;
+$count = 0;
 for ($x = 0; $x < count((array) $cart); $x ++) {
     $total = $total + $cart[$x]['carPrice'];
+    $count++;
     ?>
 <tr>
 <?php if (!isset($_SESSION['checkoutCart'])): ?>
@@ -68,7 +70,10 @@ for ($x = 0; $x < count((array) $cart); $x ++) {
 				<th class="th-sm"></th>
 				<th class="th-sm"></th>
 				<th class="th-sm">Total:</th>
-				<th class="th-sm">$<?php echo $total; $_SESSION['total'] = $total; ?></th>
+				<th class="th-sm">$<?php echo $total;  ?></th>
+				<?php $_SESSION['total'] = $total; 
+				      $_SESSION['totalCount'] = $count;      
+				?>
 			</tr>
 		</tfoot>
 	</table>
