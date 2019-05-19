@@ -26,6 +26,26 @@ if (isset($_GET['cart']) && $_GET['cart'] = true){
         header("Location: cartHandler.php?viewCart=true");
     }
     else {
+        if (isset($_GET['discountCode'])){
+            $discountCode = $_GET['discountCode'];
+            if (strlen($discountCode) > 0){
+                $discount = $dbservice->getDiscount($discountCode);
+                if ($discount){
+                    if ($discount[0]['discountPercent'] < 10){
+                    $discountPercent = "0.0" . $discount[0]['discountPercent'];
+                    }
+                    else $discountPercent = "0." . $discount[0]['discountPercent'];
+                    $_SESSION['discountUsed'] = $discountPercent; //used for proper navigation
+                    $_SESSION['discountPercent'] = $discount[0]['discountPercent']; //used for percent value added to DB
+                    $_SESSION['discountCode'] = $discount[0]['discountCodes'];
+                    $_SESSION['total'] = round($_SESSION['total'] * (1 - ($discountPercent)), 2);
+                }
+                else {
+                    $_SESSION['editFailReason'] = "Invalid coupon code";
+                }
+            }
+        }
+        
         $cc = $dbservice->findCCByID($_SESSION['ID']);
         header("Location: displayCheckout.php");
     }
@@ -38,9 +58,10 @@ if (isset($_POST['payConfirmed'])){
         array_push($productIDs, $cart[$x]['ID']);
     } 
     $_SESSION['test'] = implode(",", $productIDs);
-    if ($dbservice->completeSaleTransaction($_SESSION['ID'], $_SESSION['addressID'], $productIDs, $_SESSION['total'], $_SESSION['totalCount'])){
-        $_SESSION['purchaseSuccess'] = true;
-        header("Location: displayOrders.php");
+    if ($dbservice->completeSaleTransaction($_SESSION['ID'], $_SESSION['addressID'], $productIDs, $_SESSION['total'], 
+        $_SESSION['totalCount'], $_SESSION['discountPercent'], $_SESSION['discountCode'])){
+            $_SESSION['purchaseSuccess'] = true;
+            header("Location: displayOrders.php");
     }
     else {
         //direct to failure notification

@@ -135,40 +135,38 @@ if ($cart) {
     }
     include ('_displayCart.php');
     ?>
-    
-    
-    
-    
-    <!-- For Discount coding area -->
-    <form action="../../presentation/handlers/checkoutHandler.php" method="get">
-    <!-- TODO ADD INVISIBLE CART=TRUE -->
-	<div class="row justify-content-center text-center">
-		<div class="col-3 m-3">
-			<div class="card mb-4 bg-dark text-light border border-warning">
-				<div class="card-body text-left">
-					<h4 class="card-title text-center">Have a coupon code?<small> Enter it now!</small></h4>
-					<div class="input-group">
-						<div class="input-group-prepend">
-							<span class="input-group-text text-center" style="width: 120px"
-								id="discountCode-addon">Discount Code</span>
+   
+	<form action="../../presentation/handlers/checkoutHandler.php"
+		method="get">
+		<input type="hidden" id="cart" name="cart" value="TRUE">
+		<div class="row justify-content-center text-center">
+			<div class="col-3 m-3">
+				<div class="card mb-4 bg-dark text-light border border-warning">
+					<div class="card-body text-left">
+						<h4 class="card-title text-center">
+							Have a coupon code?<small> Enter it now!</small>
+						</h4>
+						<div class="input-group">
+							<div class="input-group-prepend">
+								<span class="input-group-text text-center" style="width: 120px"
+									id="discountCode-addon">Discount Code</span>
+							</div>
+							<input type="text" class="form-control" name="discountCode"
+								aria-label="discountCode" aria-describedby="discountCode-addon">
 						</div>
-						<input type="text" class="form-control" name="discountCode"
-							aria-label="discountCode" aria-describedby="discountCode-addon">
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-
-	<div class="container text-center">
-		<div class="row mb-4 justify-content-center">
-			<div class="col">
-				<a class="btn-lg btn-secondary border border-warning mx-auto"
-					href="../../presentation/handlers/checkoutHandler.php?cart=true"
-					role="button" data-toggle="tooltip" title="checkout">Checkout</a>
+		<div class="container text-center">
+			<div class="row mb-4 justify-content-center">
+				<div class="col">
+					<button type="submit"
+						class="btn-lg btn-secondary border border-warning mx-auto"
+						data-toggle="tooltip" name="checkout">Checkout</button>
+				</div>
 			</div>
 		</div>
-	</div>
 	</form>
 	
 	

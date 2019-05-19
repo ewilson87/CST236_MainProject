@@ -6,7 +6,7 @@ require_once '../../header.php';
 require_once '../../Autoloader.php';
 require_once 'handlersSecurePage.php';
 
-if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
+if ($_SESSION['accessLevel'] == 9) {
 
     $dbservice = new ProductBusinessService();
 

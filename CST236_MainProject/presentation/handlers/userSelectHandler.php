@@ -13,11 +13,8 @@ if (isset($_GET['ID'])) {
 }
 
 if ($_SESSION['accessLevel'] == 9 || $_SESSION['ID'] == $id) {
-
     $_SESSION['userSearchID'] = $id;
-
     $userService = new UserBusinessService();
-
     $user = $userService->findByID($id);
 } else {
     session_destroy();

@@ -37,8 +37,8 @@ $_SESSION['checkoutCart'] = true;
 	href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
 	integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
 	crossorigin="anonymous">
-	
-	<style>
+
+<style>
 hr {
 	border: 0;
 	height: 1px;
@@ -68,15 +68,15 @@ hr {
 		<?php if ($_SESSION['accessLevel'] == 9): ?>
 		<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
-				href="reportHandler.php"
-				role="button" data-toggle="tooltip" title="Reports"><i class="fas fa-tasks"></i></a></li>
+				href="reportHandler.php" role="button" data-toggle="tooltip"
+				title="Reports"><i class="fas fa-tasks"></i></a></li>
 		<?php endif; ?>
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
 				href="../../presentation/handlers/cartHandler.php?viewCart=true&ID=<?php echo $_SESSION['ID']; ?>"
 				role="button" data-toggle="tooltip" title="Back"> <i
 					class="fas fa-arrow-circle-left"></i></a></li>
-					<li class="nav-item dropdown ml-2"><a
+			<li class="nav-item dropdown ml-2"><a
 				class="btn btn-secondary border border-warning nav-link dropdown-toggle"
 				style="height: 45px" href="#" id="navbarDropdown" role="button"
 				data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i
@@ -101,12 +101,24 @@ hr {
 		</ul>
 	</nav>
 
+<?php
+if (isset($_SESSION['editFailReason'])) {
+    include '_editFail.php';
+    unset($_SESSION['editFailReason']);
+}
+?>
+
 	<div class="container">
 		<div class="jumbotron bg-secondary text-light border border-warning">
 			<h1 class="display-5">Confirm Transaction Details</h1>
 			<hr>
 			<p class="lead text-left">
 				Transaction total: <?php echo "$" . $_SESSION['total']; ?>
+				<?php 
+				if (isset($_SESSION['discountUsed'])){
+				    echo "</p><p class='lead text-left'><h3>You saved " . substr($_SESSION['discountUsed'], -2) . "% using coupon code!</h3>";
+				}
+				?>
 			</p>
 			<hr>
 			<p class="lead text-left">
@@ -136,11 +148,14 @@ if ($cart) {
     <div class="container text-center">
 		<div class="row mb-4 justify-content-center">
 			<div class="col">
-				<form method="post" action="../../presentation/handlers/checkoutHandler.php">
-				<div class="d-flex justify-content-center">
-							<button type="submit" class="btn-lg btn-secondary border border-warning" name="payConfirmed"
-							data-toggle="confirmation" title="Confirm" >Submit Payment</button>
-							</div>
+				<form method="post"
+					action="../../presentation/handlers/checkoutHandler.php">
+					<div class="d-flex justify-content-center">
+						<button type="submit"
+							class="btn-lg btn-secondary border border-warning"
+							name="payConfirmed" data-toggle="confirmation" title="Confirm">Submit
+							Payment</button>
+					</div>
 				</form>
 			</div>
 		</div>

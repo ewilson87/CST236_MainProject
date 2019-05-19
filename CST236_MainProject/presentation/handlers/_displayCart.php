@@ -31,7 +31,7 @@ $total = 0;
 $count = 0;
 for ($x = 0; $x < count((array) $cart); $x ++) {
     $total = $total + $cart[$x]['carPrice'];
-    $count++;
+    $count ++;
     ?>
 <tr>
 <?php if (!isset($_SESSION['checkoutCart'])): ?>
@@ -52,13 +52,14 @@ for ($x = 0; $x < count((array) $cart); $x ++) {
 	</td>
           
 <?php
-    echo "<td>" . $cart[$x]['carMake'] . "</td>" . "<td>" . $cart[$x]['carModel'] . "</td>" . "<td class='text-center'>" . 
-        $cart[$x]['carYear'] . "</td>" . "<td class='text-center'>$" . $cart[$x]['carPrice'] . "</td>";
+    echo "<td>" . $cart[$x]['carMake'] . "</td>" . "<td>" . $cart[$x]['carModel'] . "</td>" . "<td class='text-center'>" . $cart[$x]['carYear'] . "</td>" . "<td class='text-center'>$" . $cart[$x]['carPrice'] . "</td>";
     echo "</tr>";
 }
 
 ?>
 
+		
+		
 		
 		</tbody>
 		<tfoot class="thead-dark">
@@ -70,10 +71,16 @@ for ($x = 0; $x < count((array) $cart); $x ++) {
 				<th class="th-sm"></th>
 				<th class="th-sm"></th>
 				<th class="th-sm">Total:</th>
-				<th class="th-sm">$<?php echo $total;  ?></th>
-				<?php $_SESSION['total'] = $total; 
-				      $_SESSION['totalCount'] = $count;      
-				?>
+				<?php
+                    if (! isset($_SESSION['discountUsed'])) {
+                        $_SESSION['total'] = $total;
+                    }
+                    else {
+                        unset($_SESSION['discountUsed']);
+                    }
+                    $_SESSION['totalCount'] = $count;
+                ?>
+				<th class="th-sm">$<?php echo $_SESSION['total'];  ?></th>
 			</tr>
 		</tfoot>
 	</table>

@@ -116,8 +116,9 @@ hr {
 					<div class="card-body text-left">
 						<h3 class="card-title text-center">Starting Date</h3>
 						<div class="form-group">
+						<?php date_default_timezone_set("America/Los_Angeles"); ?>
 							<input type="date" class="form-control border border-warning"
-								name="startDate" id="startDate" aria-describedby="searchHelp">
+								name="startDate" value="<?php echo date('Y-m-d'); ?>" id="startDate" aria-describedby="searchHelp">
 						</div>
 					</div>
 				</div>
@@ -128,7 +129,7 @@ hr {
 							<h3 class="card-title text-center">Ending Date</h3>
 							<div class="form-group">
 								<input type="date" class="form-control border border-warning"
-									name="endDate" id="endDate" aria-describedby="searchHelp">
+									name="endDate" value="<?php echo date('Y-m-d'); ?>" id="endDate" aria-describedby="searchHelp">
 							</div>
 						</div>
 					</div>

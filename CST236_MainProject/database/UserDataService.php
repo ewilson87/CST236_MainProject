@@ -440,7 +440,7 @@ class UserDataService implements JsonSerializable
         $stmt = $conn->prepare("UPDATE products SET sold = 1 WHERE ID IN ($comma_separated)");
         
         if (!$stmt){
-            echo "Something is wrong in the binding process. SQL Error?";
+            echo "Something is wrong in the binding process. SQL Error in marking sold?";
             exit;
         }
         
@@ -505,8 +505,6 @@ class UserDataService implements JsonSerializable
            
             return $orderId;
         }
-        
-        
     }
     
     public function createOrderDetails($orderID, $productIDs){
@@ -528,7 +526,7 @@ class UserDataService implements JsonSerializable
             return false;
         }
     }
-    
+
     public function updateCartsRemoveSold(){
         $conn = $this->conn;
         
@@ -544,7 +542,7 @@ class UserDataService implements JsonSerializable
         return true;
     }
     
-    public function completeSaleTransaction($userID, $addressID, $productIDs, $total, $count){
+    public function completeSaleTransaction($userID, $addressID, $productIDs, $total, $count, $discount, $discountCode){
         //ATOMIC transaction process       
         $conn = $this->conn;
         $conn->autocommit(FALSE);
@@ -553,7 +551,7 @@ class UserDataService implements JsonSerializable
         //hard coded to return true
         $paymentSuccess = $this->processPayment();
         
-        $orderSuccess = $this->createOrder($userID, $addressID, $total, $count);
+        $orderSuccess = $this->createOrder($userID, $addressID, $total, $count, $discount);
         
         $orderID = $this->getMostRecentOrderID($userID);
         
@@ -561,9 +559,12 @@ class UserDataService implements JsonSerializable
         
         $markAsSold = $this->markAsSold($productIDs);
         
+        $removeUsedDiscount = $this->removeUsedDiscount($discountCode);
+        
         $updateCart = $this->updateCartsRemoveSold();      
         
-        if ($paymentSuccess == true && $orderSuccess == true && $orderDetails == true && $markAsSold ==true && $updateCart == true){
+        if ($paymentSuccess == true && $orderSuccess == true && $orderDetails == true && $markAsSold ==true && $updateCart == true
+            && $removeUsedDiscount == true){
             $conn->commit();
             $_SESSION['orderSuccessID'] = $orderID;
             return true;
@@ -667,5 +668,55 @@ class UserDataService implements JsonSerializable
             }
             return json_encode($ordersHistory_array, JSON_PRETTY_PRINT);
         }
+    }
+    
+    public function getDiscount($discountCode){
+        $conn = $this->conn;
+        
+        $discountCode = mysqli_real_escape_string($conn, $discountCode);
+        
+        $stmt = $conn->prepare("SELECT * FROM discount_codes WHERE discountCodes = ? LIMIT 1");
+        
+        // bind params
+        $stmt->bind_param('s', $discountCode);
+        
+        // execute query
+        $stmt->execute();
+        
+        // get results
+        $result = $stmt->get_result();
+        
+        if (! $result) {
+            echo "Error in the SQL statement for discount code";
+            return NULL;
+            exit();
+        }
+        
+        if ($result->num_rows == 0) {
+            return NULL;
+        } else {
+            $discountArray = array();
+            
+            while ($discount = $result->fetch_assoc()) {
+                array_push($discountArray, $discount);
+            }
+            
+            return $discountArray;
+        }
+    }
+    
+    public function removeUsedDiscount($discountCode){
+        $conn = $this->conn;
+        
+        $stmt = $conn->prepare("DELETE FROM discount_codes WHERE discountCodes = '$discountCode'");
+        
+        if (! $stmt) {
+            echo "Something went wrong removing the used discount code.";
+            exit();
+        }
+        
+        $stmt->execute();
+        
+        return true;
     }
 }

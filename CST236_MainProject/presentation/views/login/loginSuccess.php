@@ -84,7 +84,7 @@ hr {
 					<a class="dropdown-item"
 						href="../../handlers/userSelectHandler.php?ID=<?php echo $_SESSION['ID']; ?>">Account</a>
 					<hr>
-					<a class="dropdown-item" href="displayOrders.php">Orders</a>
+					<a class="dropdown-item" href="../../handlers/displayOrders.php">Orders</a>
 				</div></li>
 			<li class="ml-2 mt-2"><a
 				class="btn-lg btn-secondary border border-warning"
